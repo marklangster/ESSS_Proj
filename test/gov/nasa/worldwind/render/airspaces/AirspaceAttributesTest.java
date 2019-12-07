@@ -5,7 +5,6 @@
  */
 package gov.nasa.worldwind.render.airspaces;
 
-import gov.nasa.worldwind.render.Material;
 import gov.nasa.worldwind.util.RestorableSupport;
 import org.junit.Test;
 import org.junit.runner.RunWith;

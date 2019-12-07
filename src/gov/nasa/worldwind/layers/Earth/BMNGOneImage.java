@@ -7,7 +7,6 @@ package gov.nasa.worldwind.layers.Earth;
 
 import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.layers.RenderableLayer;
-import gov.nasa.worldwind.render.SurfaceImage;
 import gov.nasa.worldwind.util.*;
 
 /**

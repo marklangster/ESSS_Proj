@@ -1,16 +1,27 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 
 package gov.nasa.worldwind.ogc.kml.impl;
 
-import gov.nasa.worldwind.ogc.kml.*;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.ogc.kml.KMLAbstractFeature;
+import gov.nasa.worldwind.ogc.kml.KMLAbstractObject;
+import gov.nasa.worldwind.ogc.kml.KMLData;
+import gov.nasa.worldwind.ogc.kml.KMLExtendedData;
+import gov.nasa.worldwind.ogc.kml.KMLSchema;
+import gov.nasa.worldwind.ogc.kml.KMLSchemaData;
+import gov.nasa.worldwind.ogc.kml.KMLSimpleData;
+import gov.nasa.worldwind.ogc.kml.KMLSimpleField;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.WWUtil;
 
-import java.util.*;
-import java.util.regex.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Text decoder that performs entity substitution for KML description balloons. This class is thread safe.

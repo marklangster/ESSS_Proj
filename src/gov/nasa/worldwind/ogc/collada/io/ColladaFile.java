@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -8,7 +8,10 @@ package gov.nasa.worldwind.ogc.collada.io;
 
 import gov.nasa.worldwind.util.Logging;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Represents a COLLADA document read from a file.

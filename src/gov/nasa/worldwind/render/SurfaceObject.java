@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -8,20 +8,20 @@ package gov.nasa.worldwind.render;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.geom.Extent;
 
-import java.awt.*;
+import java.awt.Point;
 
 /**
  * Common interface for renderables that are drawn on the Globe's surface terrain, such as {@link
  * gov.nasa.worldwind.render.SurfaceShape}. SurfaceObject implements the {@link gov.nasa.worldwind.render.Renderable}
  * interface, so a surface object may be aggregated within any layer or within some arbitrary rendering code.
- * <p/>
+ * <p>
  * SurfaceObjects automatically aggregate themselves in the DrawContext's ordered surface renderable queue by calling
  * {@link gov.nasa.worldwind.render.DrawContext#addOrderedSurfaceRenderable(OrderedRenderable)} during the preRender,
  * pick, and render stages. This enables SurfaceObjects to be processed in bulk, and reduces texture memory consumption
  * by sharing rendering resources amongst multiple SurfaceObjects.
- * <p/>
+ * <p>
  * Implementations of SurfaceObject require that {@link #preRender(DrawContext)} is called before {@link
- * #render(DrawContext)} and {@link #pick(DrawContext, java.awt.Point)}, and that preRender is called at the appropriate
+ * #render(DrawContext)} and {@link #pick(DrawContext, Point)}, and that preRender is called at the appropriate
  * stage in the current rendering cycle. Calling preRender locks in the SurfaceObject's visual appearance for any
  * subsequent calls to pick or render until the next call preRender.
  *

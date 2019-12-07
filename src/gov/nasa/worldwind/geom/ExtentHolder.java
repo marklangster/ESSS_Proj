@@ -29,4 +29,7 @@ public interface ExtentHolder
      * @throws IllegalArgumentException if the Globe is null.
      */
     Extent getExtent(Globe globe, double verticalExaggeration);
+    Extent getExtent();
+
+
 }

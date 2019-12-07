@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -7,16 +7,25 @@
 package gov.nasa.worldwind.ogc.wcs.wcs100;
 
 import gov.nasa.worldwind.ogc.OGCConstants;
-import gov.nasa.worldwind.ogc.gml.*;
+import gov.nasa.worldwind.ogc.gml.GMLEnvelope;
+import gov.nasa.worldwind.ogc.gml.GMLGrid;
+import gov.nasa.worldwind.ogc.gml.GMLGridEnvelope;
+import gov.nasa.worldwind.ogc.gml.GMLLimits;
+import gov.nasa.worldwind.ogc.gml.GMLOrigin;
+import gov.nasa.worldwind.ogc.gml.GMLPos;
+import gov.nasa.worldwind.ogc.gml.GMLRectifiedGrid;
 import gov.nasa.worldwind.util.WWXML;
 import gov.nasa.worldwind.util.xml.*;
 import gov.nasa.worldwind.wms.Request;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.*;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
-import java.net.*;
-import java.util.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author tag
@@ -129,7 +138,7 @@ public class WCS100DescribeCoverage extends AbstractXMLEventParser
      *
      * @return <code>this</code> if parsing is successful, otherwise  null.
      *
-     * @throws javax.xml.stream.XMLStreamException
+     * @throws XMLStreamException
      *          if an exception occurs while attempting to read the event stream.
      */
     public WCS100DescribeCoverage parse(Object... args) throws XMLStreamException

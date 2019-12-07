@@ -6,7 +6,8 @@
 package gov.nasa.worldwind.avlist;
 
 import gov.nasa.worldwind.exception.WWRuntimeException;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.RestorableSupport;
 
 import java.beans.PropertyChangeSupport;
 import java.util.*;

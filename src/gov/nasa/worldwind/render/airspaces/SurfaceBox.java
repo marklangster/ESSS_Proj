@@ -6,13 +6,17 @@
 
 package gov.nasa.worldwind.render.airspaces;
 
-import gov.nasa.worldwind.geom.*;
+import gov.nasa.worldwind.geom.LatLon;
+import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.globes.Globe;
-import gov.nasa.worldwind.render.*;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.render.AbstractSurfaceShape;
+import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.SurfaceTileDrawContext;
 
 import javax.media.opengl.GL2;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SurfaceBox extends AbstractSurfaceShape
 {

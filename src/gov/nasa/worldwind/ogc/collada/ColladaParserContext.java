@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -87,7 +87,7 @@ public class ColladaParserContext extends BasicXMLEventParserContext
 
     /**
      * Loads the parser map with the parser to use for each element type. The parser may be changed by calling {@link
-     * #registerParser(javax.xml.namespace.QName, gov.nasa.worldwind.util.xml.XMLEventParser)}.
+     * #registerParser(QName, gov.nasa.worldwind.util.xml.XMLEventParser)}.
      */
     @Override
     protected void initializeParsers()
@@ -165,7 +165,7 @@ public class ColladaParserContext extends BasicXMLEventParserContext
         this.parsers.put(new QName(ns, "lines"), new ColladaLines(ns));
         this.parsers.put(new QName(ns, "extra"), new ColladaExtra(ns));
 
-        // The following elements are valid COLLADA markup, but are not used by World Wind.
+        // The following elements are valid COLLADA markup, but are not used by WorldWind.
         parser = new ColladaUnsupported(ns);
         this.parsers.put(new QName(ns, "library_cameras"), parser);
         this.parsers.put(new QName(ns, "instance_camera"), parser);

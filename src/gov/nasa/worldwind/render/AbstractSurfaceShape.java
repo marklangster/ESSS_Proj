@@ -6,25 +6,48 @@
 package gov.nasa.worldwind.render;
 
 import com.jogamp.common.nio.Buffers;
-import gov.nasa.worldwind.*;
+import gov.nasa.worldwind.Exportable;
+import gov.nasa.worldwind.Movable;
+import gov.nasa.worldwind.Movable2;
+import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
-import gov.nasa.worldwind.drag.*;
+import gov.nasa.worldwind.drag.DragContext;
+import gov.nasa.worldwind.drag.Draggable;
+import gov.nasa.worldwind.drag.DraggableSupport;
 import gov.nasa.worldwind.exception.WWRuntimeException;
-import gov.nasa.worldwind.geom.*;
+import gov.nasa.worldwind.geom.Angle;
+import gov.nasa.worldwind.geom.Extent;
+import gov.nasa.worldwind.geom.LatLon;
+import gov.nasa.worldwind.geom.Matrix;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.geom.Sector;
+import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.ogc.kml.KMLConstants;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.util.GLUTessellatorSupport;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.OGLStackHandler;
+import gov.nasa.worldwind.util.OGLUtil;
+import gov.nasa.worldwind.util.RestorableSupport;
+import gov.nasa.worldwind.util.SurfaceTileDrawContext;
+import gov.nasa.worldwind.util.WWMath;
 import gov.nasa.worldwind.util.combine.*;
 import gov.nasa.worldwind.util.measure.AreaMeasurer;
 
-import javax.media.opengl.*;
-import javax.media.opengl.glu.*;
+import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
+import javax.media.opengl.glu.GLU;
+import javax.media.opengl.glu.GLUtessellator;
+import javax.media.opengl.glu.GLUtessellatorCallback;
 import javax.xml.stream.XMLStreamException;
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.nio.FloatBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Common superclass for surface conforming shapes such as {@link gov.nasa.worldwind.render.SurfacePolygon}, {@link

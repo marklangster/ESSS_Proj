@@ -1,16 +1,17 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 
 package gov.nasa.worldwind.ogc.kml;
 
-import gov.nasa.worldwind.util.xml.XMLEventParserContext;
 import gov.nasa.worldwind.util.WWUtil;
+import gov.nasa.worldwind.util.xml.XMLEventParserContext;
 
-import javax.xml.stream.events.*;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.XMLEvent;
 
 /**
  * Represents the KML <i>Snippet</i> element and provides access to its contents.

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -12,7 +12,8 @@ import gov.nasa.worldwind.util.xml.*;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author tag

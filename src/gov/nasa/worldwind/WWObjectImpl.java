@@ -7,8 +7,9 @@
 package gov.nasa.worldwind;
 
 import gov.nasa.worldwind.avlist.AVListImpl;
-import gov.nasa.worldwind.event.*;
-import gov.nasa.worldwind.util.*;
+
+import gov.nasa.worldwind.event.Message;
+import gov.nasa.worldwind.util.Logging;
 
 /**
  * Implements <code>WWObject</code> functionality. Meant to be either subclassed or aggregated by classes implementing

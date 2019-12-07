@@ -1,14 +1,15 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 package gov.nasa.worldwind.render;
 
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.RestorableSupport;
 
-import javax.media.opengl.*;
-import java.awt.*;
+import javax.media.opengl.GL2;
+import java.awt.Color;
 
 /**
  * @author tag

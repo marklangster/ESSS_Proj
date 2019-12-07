@@ -1,17 +1,24 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 
 package gov.nasa.worldwind.ogc.collada;
 
-import gov.nasa.worldwind.geom.*;
-import gov.nasa.worldwind.ogc.collada.impl.*;
+import gov.nasa.worldwind.geom.Box;
+import gov.nasa.worldwind.geom.Matrix;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.ogc.collada.impl.ColladaMeshShape;
+import gov.nasa.worldwind.ogc.collada.impl.ColladaRenderable;
+import gov.nasa.worldwind.ogc.collada.impl.ColladaTraversalContext;
 import gov.nasa.worldwind.render.DrawContext;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.WWUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Represents the COLLADA <i>node</i> element and provides access to its contents.

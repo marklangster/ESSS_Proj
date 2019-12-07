@@ -9,7 +9,6 @@ import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.animation.*;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.globes.Globe;
-import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.Logging;
 
 import javax.media.opengl.glu.GLU;

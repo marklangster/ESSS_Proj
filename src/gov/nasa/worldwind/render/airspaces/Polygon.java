@@ -10,13 +10,27 @@ import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.cache.Cacheable;
 import gov.nasa.worldwind.exception.WWRuntimeException;
 import gov.nasa.worldwind.geom.Box;
-import gov.nasa.worldwind.geom.*;
+import gov.nasa.worldwind.geom.Extent;
+import gov.nasa.worldwind.geom.LatLon;
+import gov.nasa.worldwind.geom.Matrix;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
-import gov.nasa.worldwind.render.*;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.SurfacePolygon;
+import gov.nasa.worldwind.render.SurfaceShape;
+import gov.nasa.worldwind.util.GeometryBuilder;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.OGLStackHandler;
+import gov.nasa.worldwind.util.RestorableSupport;
+import gov.nasa.worldwind.util.WWMath;
 
-import javax.media.opengl.*;
-import java.util.*;
+import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author tag
@@ -463,6 +477,12 @@ public class Polygon extends AbstractAirspace
         }
     }
 
+    @Override
+    public Extent getExtent()
+    {
+        return null;
+    }
+
     //**************************************************************//
     //********************  Polygon  ******************//
     //**************************************************************//
@@ -519,32 +539,16 @@ public class Polygon extends AbstractAirspace
         // tessellation of the polygon vertices. If the polygon cannot be tessellated, we replace the polygon's
         // locations with an empty list to prevent subsequent tessellation attempts, and to avoid rendering a misleading
         // representation by omitting any part of the geometry.
-        try
-        {
-            PolygonGeometry geom = (PolygonGeometry) this.getGeometryCache().getObject(cacheKey);
-            if (geom == null || this.isExpired(dc, geom.getVertexGeometry()))
-            {
-                if (geom == null)
-                    geom = new PolygonGeometry();
-                this.makePolygon(dc, locations, edgeFlags, altitudes, terrainConformant, enableCaps, subdivisions,
-                    referenceCenter, geom);
-                this.updateExpiryCriteria(dc, geom.getVertexGeometry());
-                this.getGeometryCache().add(cacheKey, geom);
-            }
+            PolygonGeometry geom = null;
+
+            if (geom == null)
+                geom = new PolygonGeometry();
+            this.makePolygon(dc, locations, edgeFlags, altitudes, terrainConformant, enableCaps, subdivisions,
+                referenceCenter, geom);
+            this.updateExpiryCriteria(dc, geom.getVertexGeometry());
 
             return geom;
-        }
-        catch (OutOfMemoryError e)
-        {
-            String message = Logging.getMessage("generic.ExceptionWhileTessellating", this);
-            Logging.logger().log(java.util.logging.Level.SEVERE, message, e);
 
-            //noinspection ThrowableInstanceNeverThrown
-            dc.addRenderingException(new WWRuntimeException(message, e));
-
-            this.handleUnsuccessfulGeometryCreation();
-            return null;
-        }
     }
 
     protected void handleUnsuccessfulGeometryCreation()

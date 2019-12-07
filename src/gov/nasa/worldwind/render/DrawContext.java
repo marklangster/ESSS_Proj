@@ -5,17 +5,20 @@
  */
 package gov.nasa.worldwind.render;
 
+import Terrain.Terrain;
 import com.jogamp.opengl.util.texture.TextureCoords;
+import com.sun.tools.internal.ws.processor.model.Model;
 import gov.nasa.worldwind.*;
 import gov.nasa.worldwind.cache.GpuResourceCache;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.layers.*;
-import gov.nasa.worldwind.pick.*;
-import gov.nasa.worldwind.terrain.*;
+import gov.nasa.worldwind.pick.PickedObject;
 import gov.nasa.worldwind.util.*;
 
-import javax.media.opengl.*;
+import javax.media.opengl.GL;
+import javax.media.opengl.GLContext;
+import javax.media.opengl.GLDrawable;
 import javax.media.opengl.glu.GLU;
 import java.awt.*;
 import java.nio.FloatBuffer;
@@ -30,10 +33,10 @@ import java.util.Queue;
 public interface DrawContext extends WWObject, Disposable
 {
     /**
-     * Assigns this <code>DrawContext</code> a new </code>javax.media.opengl.GLContext</code>. May throw a
+     * Assigns this <code>DrawContext</code> a new <code>com.jogamp.opengl.GLContext</code>. May throw a
      * <code>NullPointerException</code> if <code>glContext</code> is null.
      *
-     * @param glContext the new <code>javax.media.opengl.GLContext</code>
+     * @param glContext the new <code>com.jogamp.opengl.GLContext</code>
      *
      * @throws NullPointerException if glContext is null
      * @since 1.5
@@ -41,18 +44,18 @@ public interface DrawContext extends WWObject, Disposable
     void setGLContext(GLContext glContext);
 
     /**
-     * Retrieves this <code>DrawContext</code>s </code>javax.media.opengl.GLContext</code>. If this method returns null,
+     * Retrieves this <code>DrawContext</code>s <code>com.jogamp.opengl.GLContext</code>. If this method returns null,
      * then there are potentially no active <code>GLContext</code>s and rendering should be aborted.
      *
-     * @return this <code>DrawContext</code>s </code>javax.media.opengl.GLContext</code>.
+     * @return this <code>DrawContext</code>s <code>com.jogamp.opengl.GLContext</code>.
      *
      * @since 1.5
      */
     GLContext getGLContext();
 
     /**
-     * Retrieves the current <code>javax.media.opengl.GL</code>. A <code>GL</code> or <code>GLU</code> is required for
-     * all graphical rendering in World Wind.
+     * Retrieves the current <code>com.jogamp.opengl.GL</code>. A <code>GL</code> or <code>GLU</code> is required for
+     * all graphical rendering in WorldWind.
      *
      * @return the current <code>GL</code> if available, null otherwise
      *
@@ -61,8 +64,8 @@ public interface DrawContext extends WWObject, Disposable
     GL getGL();
 
     /**
-     * Retrieves the current <code>javax.media.opengl.glu.GLU</code>. A <code>GLU</code> or <code>GL</code> is required
-     * for all graphical rendering in World Wind.
+     * Retrieves the current <code>com.jogamp.opengl.glu.GLU</code>. A <code>GLU</code> or <code>GL</code> is required
+     * for all graphical rendering in WorldWind.
      *
      * @return the current <code>GLU</code> if available, null otherwise
      *
@@ -71,7 +74,7 @@ public interface DrawContext extends WWObject, Disposable
     GLU getGLU();
 
     /**
-     * Retrieves the current <code>javax.media.opengl.GLDrawable</code>. A <code>GLDrawable</code> can be used to create
+     * Retrieves the current <code>com.jogamp.opengl.GLDrawable</code>. A <code>GLDrawable</code> can be used to create
      * a <code>GLContext</code>, which can then be used for rendering.
      *
      * @return the current <code>GLDrawable</code>, null if none available
@@ -79,13 +82,20 @@ public interface DrawContext extends WWObject, Disposable
      * @since 1.5
      */
     GLDrawable getGLDrawable();
+    void addPickedObject(PickedObject pickedObject);
+    void addObjectInPickRectangle(PickedObject pickedObject);
+    void addOrderedRenderable(OrderedRenderable orderedRenderable);
+    OrderedRenderable peekOrderedRenderables();
+    OrderedRenderable pollOrderedRenderables();
+    void drawOutlinedShape(OutlinedShape renderer, Object shape);
+
 
     /**
      * Indicates the width in pixels of the drawing target associated with this <code>DrawContext</code>. The returned
      * width is potentially different from the GL viewport width. If this DrawContext is associated with a
      * <code>GLJPanel</code>, the returned width is the power-of-two ceiling of the viewport, and is therefore almost
      * always larger than the GL viewport width.
-     * <p/>
+     * <p>
      * The GL viewport dimensions can be accessed by calling <code>getView().getViewport()</code> on this
      * <code>DrawContext</code>.
      *
@@ -98,7 +108,7 @@ public interface DrawContext extends WWObject, Disposable
      * height is potentially different from the GL viewport height. If this DrawContext is associated with a
      * <code>GLJPanel</code>, the returned height is the power-of-two ceiling of the viewport, and is therefore almost
      * always larger than the GL viewport height.
-     * <p/>
+     * <p>
      * The GL viewport dimensions can be accessed by calling <code>getView().getViewport()</code> on this
      * <code>DrawContext</code>.
      *
@@ -107,26 +117,10 @@ public interface DrawContext extends WWObject, Disposable
     int getDrawableHeight();
 
     /**
-     * Returns the {@link GLRuntimeCapabilities} associated with this DrawContext.
-     *
-     * @return this DrawContext's associated GLRuntimeCapabilities.
-     */
-    GLRuntimeCapabilities getGLRuntimeCapabilities();
-
-    /**
-     * Sets the {@link GLRuntimeCapabilities} associated with this DrawContext to the specified parameter.
-     *
-     * @param capabilities the GLRuntimeCapabilities to be associated with this DrawContext.
-     *
-     * @throws IllegalArgumentException if the capabilities are null.
-     */
-    void setGLRuntimeCapabilities(GLRuntimeCapabilities capabilities);
-
-    /**
      * Initializes this <code>DrawContext</code>. This method should be called at the beginning of each frame to prepare
      * the <code>DrawContext</code> for the coming render pass.
      *
-     * @param glContext the <code>javax.media.opengl.GLContext</code> to use for this render pass
+     * @param glContext the <code>com.jogamp.opengl.GLContext</code> to use for this render pass
      *
      * @since 1.5
      */
@@ -233,62 +227,6 @@ public interface DrawContext extends WWObject, Disposable
     double getVerticalExaggeration();
 
     /**
-     * Retrieves a list of all the sectors rendered so far this frame.
-     *
-     * @return a <code>SectorGeometryList</code> containing every <code>SectorGeometry</code> rendered so far this
-     *         render pass.
-     *
-     * @since 1.5
-     */
-    SectorGeometryList getSurfaceGeometry();
-
-    /**
-     * Returns the list of objects at the pick point during the most recent pick traversal. The returned list is empty
-     * if nothing is at the pick point, or if the pick point is <code>null</code>.
-     *
-     * @return the list of picked objects.
-     */
-    PickedObjectList getPickedObjects();
-
-    /**
-     * Adds a list of picked objects to the current list of objects at the pick point. This list can be accessed by
-     * calling {@link #getPickedObjects()}.
-     *
-     * @param pickedObjects the list to add.
-     *
-     * @throws IllegalArgumentException if pickedObjects is <code>null</code>.
-     */
-    void addPickedObjects(PickedObjectList pickedObjects);
-
-    /**
-     * Adds the specified picked object to the list of objects at the pick point. This list can be accessed by calling
-     * {@link #getPickedObjects()}.
-     *
-     * @param pickedObject the object to add.
-     *
-     * @throws IllegalArgumentException if pickedObject is <code>null</code>.
-     */
-    void addPickedObject(PickedObject pickedObject);
-
-    /**
-     * Returns the list of objects intersecting the pick rectangle during the most recent pick traversal. The returned
-     * list is empty if nothing intersects the pick rectangle, or if the pick rectangle is <code>null</code>.
-     *
-     * @return the list of picked objects.
-     */
-    PickedObjectList getObjectsInPickRectangle();
-
-    /**
-     * Adds the specified picked object to the current list of objects intersecting the pick rectangle. This list can be
-     * accessed by calling {@link #getObjectsInPickRectangle()}.
-     *
-     * @param pickedObject the object to add.
-     *
-     * @throws IllegalArgumentException if pickedObject is <code>null</code>.
-     */
-    void addObjectInPickRectangle(PickedObject pickedObject);
-
-    /**
      * Returns a unique color to serve as a pick identifier during picking. This allocates a single unique color from
      * the pick color address space and returns that color. The color's RGB components represent an address to the pick
      * color code.
@@ -303,7 +241,7 @@ public interface DrawContext extends WWObject, Disposable
      * components represent an address to the beginning of a sequential range of pick color codes. This method is
      * similar to calling the no-argument {@link #getUniquePickColor} <code>count</code> times, but guarantees a
      * contiguous range of color codes and is more efficient when <code>count</code> is large.
-     * <p/>
+     * <p>
      * The number of pick colors is limited to a finite address space. This method returns null when there are fewer
      * than <code>count</code> remaining unique colors in the pick color address space, or when <code>count</code> is
      * less than 1.
@@ -327,7 +265,7 @@ public interface DrawContext extends WWObject, Disposable
      * green, and blue components are each stored as an 8-bit unsigned integer, and packed into bits 0-23 of the
      * returned integer as follows: bits 16-23 are red, bits 8-15 are green, and bits 0-7 are blue. This format is
      * consistent with the RGB integers used to create the pick colors in getUniquePickColor.
-     * <p/>
+     * <p>
      * This returns 0 if the point contains the clear color, or is outside this draw context's drawable area.
      *
      * @param point the point to return a color for, in AWT screen coordinates.
@@ -343,11 +281,11 @@ public interface DrawContext extends WWObject, Disposable
      * pick color codes. The red, green, and blue components are each stored as an 8-bit unsigned integer, and packed
      * into bits 0-23 of the returned integers as follows: bits 16-23 are red, bits 8-15 are green, and bits 0-7 are
      * blue. This format is consistent with the RGB integers used to create the pick colors in getUniquePickColor.
-     * <p/>
+     * <p>
      * The returned array contains one entry for each unique color. Points in the rectangle that contain the clear color
      * or are outside this draw context's drawable area are ignored. This returns <code>null</code> if the specified
      * rectangle is empty, or contains only the clear color.
-     * <p/>
+     * <p>
      * The minAndMaxColorCodes parameter limits the unique colors that this method returns to the specified range. The
      * minimum color must be stored in array index 0, and the maximum color must be stored in array index 1. These
      * values can be used to specify a small range of colors relative to the framebuffer contents, effectively culling
@@ -393,47 +331,6 @@ public interface DrawContext extends WWObject, Disposable
     boolean isDeepPickingEnabled();
 
     /**
-     * Adds an {@link gov.nasa.worldwind.render.OrderedRenderable} to the draw context's ordered renderable list.
-     *
-     * @param orderedRenderable the ordered renderable to add.
-     *
-     * @throws IllegalArgumentException if the ordered renderable is null.
-     */
-    void addOrderedRenderable(OrderedRenderable orderedRenderable);
-
-    /**
-     * Adds an {@link gov.nasa.worldwind.render.OrderedRenderable} to the draw context's ordered renderable list,
-     * optionally indicating that the draw context should treat the specified ordered renderable as behind other ordered
-     * renderables. If <code>isBehind</code> is <code>true</code>, the draw context treats the specified ordered
-     * renderable as though it is behind all other ordered renderables and ignores the ordered renderable's eye
-     * distance. If multiple ordered renderables are added with <code>isBehind</code> specified as <code>true</code>,
-     * those ordered renderables are drawn according to the order in which they are added.
-     *
-     * @param orderedRenderable the ordered renderable to add.
-     * @param isBehind          <code>true</code> to specify that the ordered renderable is behind all other ordered
-     *                          renderables, or <code>false</code> to interpret the ordered renderable according to its
-     *                          eye distance.
-     */
-    void addOrderedRenderable(OrderedRenderable orderedRenderable, boolean isBehind);
-
-    /**
-     * Adds an {@link gov.nasa.worldwind.render.OrderedRenderable} to the draw context's ordered surface renderable
-     * queue. This queue is populated during layer rendering with objects to render on the terrain surface, and is
-     * processed immediately after layer rendering.
-     *
-     * @param orderedRenderable the ordered renderable to add.
-     */
-    void addOrderedSurfaceRenderable(OrderedRenderable orderedRenderable);
-
-    /**
-     * Returns the draw context's ordered surface renderable queue. This queue is populated during layer rendering with
-     * objects to render on the terrain surface, and is processed immediately after layer rendering.
-     *
-     * @return the draw context's ordered surface renderable queue.
-     */
-    Queue<OrderedRenderable> getOrderedSurfaceRenderables();
-
-    /**
      * Draws a quadrilateral using the current OpenGL state. The quadrilateral points are (0, 0), (1, 0), (1, 1), (0,
      * 1).
      */
@@ -456,13 +353,6 @@ public interface DrawContext extends WWObject, Disposable
     void drawUnitQuadOutline();
 
     /**
-     * Specifies the current surface geometry.
-     *
-     * @param surfaceGeometry the surface geometry to make current. May be null, indicating no surface geometry.
-     */
-    void setSurfaceGeometry(SectorGeometryList surfaceGeometry);
-
-    /**
      * Computes a location's Cartesian point on the currently visible terrain.
      *
      * @param latitude  the location's latitude.
@@ -471,13 +361,6 @@ public interface DrawContext extends WWObject, Disposable
      * @return the location's corresponding Cartesian point, or null if the location is not currently visible.
      */
     Vec4 getPointOnTerrain(Angle latitude, Angle longitude);
-
-    /**
-     * Returns this draw context's surface tile renderer.
-     *
-     * @return this draw context's surface tile renderer.s
-     */
-    SurfaceTileRenderer getGeographicSurfaceTileRenderer();
 
     /**
      * Returns the current pick point in AWT screen coordinates.
@@ -492,9 +375,8 @@ public interface DrawContext extends WWObject, Disposable
      * Specifies the current pick point in AWT screen coordinates, or <code>null</code> to indicate that there is no
      * pick point. During each pick traversal, layers determine if their contents are drawn at the pick point. If so,
      * layers add each unique picked object to a PickedObjectList on this draw context by calling {@link
-     * #addPickedObject(gov.nasa.worldwind.pick.PickedObject)}. This list can be accessed by calling {@link
-     * #getPickedObjects()}.
-     * <p/>
+     *
+     * <p>
      * If the pick point is <code>null</code>, the pick point is ignored during each pick traversal, and the list of
      * objects returned by getPickedObjects is empty.
      *
@@ -514,10 +396,8 @@ public interface DrawContext extends WWObject, Disposable
     /**
      * Specifies the current pick rectangle in AWT screen coordinates, or <code>null</code> to indicate that there is no
      * pick rectangle. During each pick traversal, layers determine if their contents intersect the pick rectangle. If
-     * so, layers add each unique picked object to a PickedObjectList on this draw context by calling {@link
-     * #addObjectInPickRectangle(gov.nasa.worldwind.pick.PickedObject)}. This is list can be accessed by calling {@link
-     * #getObjectsInPickRectangle()}.
-     * <p/>
+     * so, layers add each unique picked object to a PickedObjectList on this draw context by calling {}.
+     * <p>
      * If the pick rectangle is <code>null</code>, the pick rectangle is ignored during each pick traversal, and the
      * list of objects returned by getObjectsInPickRectangle is empty.
      *
@@ -534,6 +414,8 @@ public interface DrawContext extends WWObject, Disposable
      * @see #getGpuResourceCache()
      */
     GpuResourceCache getTextureCache();
+    Terrain getTerrain();
+
 
     /**
      * Returns the GPU resource cache used by this draw context.
@@ -625,41 +507,6 @@ public interface DrawContext extends WWObject, Disposable
     void setViewportCenterPosition(Position viewportCenterPosition);
 
     /**
-     * Returns this draw context's text-renderer cache.
-     *
-     * @return this context's text renderer cache.
-     */
-    TextRendererCache getTextRendererCache();
-
-    /**
-     * Specifies this context's text renderer cache.
-     *
-     * @param textRendererCache the context's text renderer cache.
-     *
-     * @throws IllegalArgumentException if the cache is null.
-     */
-    void setTextRendererCache(TextRendererCache textRendererCache);
-
-    /**
-     * Returns the draw context's annotation renderer, typically used by annotations that are not contained in an {@link
-     * AnnotationLayer}.
-     *
-     * @return the annotation renderer.
-     */
-    AnnotationRenderer getAnnotationRenderer();
-
-    /**
-     * Since {@link Annotation}s are {@link Renderable}s, they can be exist outside an {@link AnnotationLayer}, in which
-     * case they are responsible for rendering themselves. The draw context's annotation renderer provides an active
-     * renderer for that purpose.
-     *
-     * @param annotationRenderer the new annotation renderer for the draw context.
-     *
-     * @throws IllegalArgumentException if <code>annotationRenderer</code> is null;
-     */
-    void setAnnotationRenderer(AnnotationRenderer annotationRenderer);
-
-    /**
      * Returns the time stamp corresponding to the beginning of a pre-render, pick, render sequence. The stamp remains
      * constant across these three operations so that called objects may avoid recomputing the same values during each
      * of the calls in the sequence.
@@ -681,7 +528,7 @@ public interface DrawContext extends WWObject, Disposable
      * Returns the visible sectors at one of several specified resolutions within a specified search sector. Several
      * sectors resolutions may be specified along with a time limit. The best resolution that can be determined within
      * the time limit is returned.
-     * <p/>
+     * <p>
      * Adherence to the time limit is not precise. The limit is checked only between full searches at each resolution.
      * The search may take more than the specified time, but will terminate if no time is left before starting a
      * higher-resolution search.
@@ -714,34 +561,19 @@ public interface DrawContext extends WWObject, Disposable
     Layer getCurrentLayer();
 
     /**
-     * Adds a screen-credit icon to display.
-     *
-     * @param credit the screen credit to display.
-     *
-     * @throws IllegalArgumentException if the credit is null.
-     */
-    void addScreenCredit(ScreenCredit credit);
-
-    /**
-     * Returns the screen credits currently held and displayed by this draw context.
-     *
-     * @return the screen credits currently held by this draw context.
-     */
-    Map<ScreenCredit, Long> getScreenCredits();
-
-    /**
-     * Indicates whether a new frame should be generated by the {@link gov.nasa.worldwind.SceneController}.
+     * Indicates whether a new frame should be generated by the {@link}.
      *
      * @return the delay in milliseconds if a redraw has been requested, otherwise 0.
      */
     int getRedrawRequested();
 
     /**
-     * Requests that a new frame should be generated by the {@link gov.nasa.worldwind.SceneController}.
+     * Requests that a new frame should be generated by the {@link}.
      *
      * @param redrawRequested a delay in milliseconds if a redraw is requested, otherwise 0.
      */
     void setRedrawRequested(int redrawRequested);
+
 
     /**
      * Gets the FrustumList containing all the current Pick Frustums
@@ -767,14 +599,14 @@ public interface DrawContext extends WWObject, Disposable
     /**
      * Creates a frustum around the current pick point and adds it to the current list of pick frustums. The frustum's
      * dimension is specified by calling {@link #setPickPointFrustumDimension(java.awt.Dimension)}.
-     * <p/>
+     * <p>
      * This does nothing if the current pick point is <code>null</code>.
      */
     void addPickPointFrustum();
 
     /**
      * Creates a frustum containing the current pick rectangle and adds it to the current list of pick frustums.
-     * <p/>
+     * <p>
      * This does nothing if the current pick rectangle is <code>null</code>.
      */
     void addPickRectangleFrustum();
@@ -815,10 +647,10 @@ public interface DrawContext extends WWObject, Disposable
      * Modifies the current projection matrix to slightly offset subsequently drawn objects toward or away from the eye
      * point. This gives those objects visual priority over objects at the same or nearly the same position. After the
      * objects are drawn, call {@link #popProjectionOffest()} to cancel the effect for subsequently drawn objects.
-     * <p/>
+     * <p>
      * <em>Note:</em> This capability is meant to be applied only within a single Renderable. It is not intended as a
      * means to offset a whole Renderable or collection of Renderables.
-     * <p/>
+     * <p>
      * See "Mathematics for Game Programming and 3D Computer Graphics, 2 ed." by  Eric Lengyel, Section 9.1, "Depth
      * Value Offset" for a description of this technique.
      *
@@ -837,64 +669,14 @@ public interface DrawContext extends WWObject, Disposable
      */
     void popProjectionOffest();
 
-    /**
-     * Indicates whether the {@link SceneController} is currently rendering the draw context's {@link
-     * OrderedRenderable}s. When the this method returns false during a call to an ordered renderable's {@link
-     * OrderedRenderable#render(DrawContext)} method, the ordered renderable should add itself to the draw context via
-     * {@link #addOrderedRenderable(OrderedRenderable)} rather than draw it. When this method returns true during a call
-     * to its render method, the ordered renderable should draw itself.
-     *
-     * @return true if the scene controller is currently rendering its ordered renderables, otherwise false.
-     */
     boolean isOrderedRenderingMode();
 
-    /**
-     * Called by the {@link gov.nasa.worldwind.SceneController} to indicate whether it is currently drawing the draw
-     * context's {@link gov.nasa.worldwind.render.OrderedRenderable}s. See {@link #isOrderedRenderingMode()} for more
-     * information.
-     *
-     * @param tf true if ordered renderables are being drawn, false if ordered renderables are only being accumulated.
-     */
     void setOrderedRenderingMode(boolean tf);
 
-    /**
-     * Performs a multi-pass rendering technique to ensure that outlines around filled shapes are drawn correctly when
-     * blending or ant-aliasing is performed, and that filled portions of the shape resolve depth-buffer fighting with
-     * shapes previously drawn in favor of the current shape.
-     *
-     * @param renderer an object implementing the {@link gov.nasa.worldwind.render.OutlinedShape} interface for the
-     *                 shape.
-     * @param shape    the shape to render.
-     *
-     * @see gov.nasa.worldwind.render.OutlinedShape
-     */
-    void drawOutlinedShape(OutlinedShape renderer, Object shape);
-
-    /**
-     * Enables the current standard lighting model. {@link #endStandardLighting()} must be called when rendering of the
-     * current shape is complete.
-     *
-     * @see #setStandardLightingModel(LightingModel)
-     * @see #endStandardLighting()
-     */
     void beginStandardLighting();
 
     /** Pops the OpenGL state previously established by {@link #beginStandardLighting()}. */
     void endStandardLighting();
-
-    /**
-     * Returns the current model used for standard lighting.
-     *
-     * @return the current standard lighting model, or null if no model is defined.
-     */
-    LightingModel getStandardLightingModel();
-
-    /**
-     * Specifies the lighting model used for standard lighting.
-     *
-     * @param standardLighting the lighting model to use for standard lighting, or null to disable standard lighting.
-     */
-    void setStandardLightingModel(LightingModel standardLighting);
 
     /**
      * Compute a model-coordinate point on the terrain.
@@ -928,30 +710,6 @@ public interface DrawContext extends WWObject, Disposable
      */
     void drawNormals(float length, FloatBuffer vBuf, FloatBuffer nBuf);
 
-    /**
-     * Returns the next {@link gov.nasa.worldwind.render.OrderedRenderable} on the ordered-renderable priority queue but
-     * does not remove it from the queue.
-     *
-     * @return the next ordered renderable, or null if there are no more ordered renderables on the queue.
-     */
-    OrderedRenderable peekOrderedRenderables();
-
-    /**
-     * Returns the next {@link gov.nasa.worldwind.render.OrderedRenderable} on the ordered-renderable priority queue and
-     * removes it from the queue.
-     *
-     * @return the next ordered renderable, or null if there are no more ordered renderables on the queue.
-     */
-    OrderedRenderable pollOrderedRenderables();
-
-    /**
-     * Returns a {@link Terrain} object that uses the current sector geometry or the current globe to compute surface
-     * points.
-     *
-     * @return a terrain object for computing surface points and intersections.
-     */
-    Terrain getTerrain();
-
     /** Restores the current OpenGL context's blending state to its default. */
     void restoreDefaultBlending();
 
@@ -961,22 +719,8 @@ public interface DrawContext extends WWObject, Disposable
     /** Restores the current OpenGL context's depth testing state to its default. */
     void restoreDefaultDepthTesting();
 
-    /**
-     * Indicates whether the scene controller is currently pre-rendering.
-     *
-     * @return true if pre-rendering, otherwise false.
-     *
-     * @see PreRenderable
-     */
     boolean isPreRenderMode();
 
-    /**
-     * Specifies whether the scene controller is pre-rendering.
-     *
-     * @param preRenderMode true to indicate pre-rendering, otherwise false.
-     *
-     * @see PreRenderable
-     */
     void setPreRenderMode(boolean preRenderMode);
 
     /**
@@ -991,13 +735,6 @@ public interface DrawContext extends WWObject, Disposable
      */
     Vec4 computePointFromPosition(Position position, int altitudeMode);
 
-    /**
-     * Returns the draw context's decluttering text renderer.
-     *
-     * @return the decluttering text renderer.
-     */
-    DeclutteringTextRenderer getDeclutteringTextRenderer();
-
     /** Filter overlapping text from the ordered renderable list. */
     void applyClutterFilter();
 //
@@ -1007,19 +744,6 @@ public interface DrawContext extends WWObject, Disposable
 //
 //    void setGroupingFilters(Map<String, GroupingFilter> filters);
 
-    /**
-     * Specifies the clutter filter to use. May be null to indicate no decluttering.
-     *
-     * @param filter the clutter filter.
-     */
-    void setClutterFilter(ClutterFilter filter);
-
-    /**
-     * Returns the current clutter filter.
-     *
-     * @return the current clutter filter.
-     */
-    ClutterFilter getClutterFilter();
 
     boolean is2DGlobe();
 

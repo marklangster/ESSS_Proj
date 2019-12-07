@@ -6,9 +6,14 @@
 
 package gov.nasa.worldwind.render.airspaces;
 
-import gov.nasa.worldwind.geom.*;
+import gov.nasa.worldwind.geom.Angle;
+import gov.nasa.worldwind.geom.LatLon;
+import gov.nasa.worldwind.geom.Matrix;
+import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
-import gov.nasa.worldwind.render.*;
+import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.SurfacePolygon;
+import gov.nasa.worldwind.render.SurfaceShape;
 import gov.nasa.worldwind.util.*;
 
 import java.util.*;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -7,12 +7,15 @@
 package gov.nasa.worldwind.ogc.kml;
 
 import gov.nasa.worldwind.event.Message;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.WWUtil;
 import gov.nasa.worldwind.util.xml.XMLEventParserContext;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Represents the KML <i>StyleMap</i> element and provides access to its contents.
@@ -102,7 +105,7 @@ public class KMLStyleMap extends KMLAbstractStyleSelector
      * Obtains the map's effective style for a specified style type (<i>IconStyle</i>, <i>ListStyle</i>, etc.) and state
      * (<i>normal</i> or <i>highlight</i>). The returned style is the result of merging values from the map's style
      * selectors and style URL for the indicated sub-style type, with precedence given to style selectors.
-     * <p/>
+     * <p>
      * Remote <i>styleUrls</i> that have not yet been resolved are not included in the result. In this case the returned
      * sub-style is marked with the value {@link gov.nasa.worldwind.avlist.AVKey#UNRESOLVED}.
      *

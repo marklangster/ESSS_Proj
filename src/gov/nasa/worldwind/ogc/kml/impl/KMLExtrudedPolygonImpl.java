@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -10,10 +10,24 @@ import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.event.Message;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.ogc.kml.*;
+import gov.nasa.worldwind.ogc.kml.KMLAbstractFeature;
+import gov.nasa.worldwind.ogc.kml.KMLAbstractGeometry;
+import gov.nasa.worldwind.ogc.kml.KMLAbstractObject;
+import gov.nasa.worldwind.ogc.kml.KMLAbstractSubStyle;
+import gov.nasa.worldwind.ogc.kml.KMLConstants;
+import gov.nasa.worldwind.ogc.kml.KMLLineStyle;
+import gov.nasa.worldwind.ogc.kml.KMLLinearRing;
+import gov.nasa.worldwind.ogc.kml.KMLPlacemark;
+import gov.nasa.worldwind.ogc.kml.KMLPolyStyle;
+import gov.nasa.worldwind.ogc.kml.KMLPolygon;
 import gov.nasa.worldwind.pick.PickedObject;
-import gov.nasa.worldwind.render.*;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.render.BasicShapeAttributes;
+import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.ExtrudedPolygon;
+import gov.nasa.worldwind.render.Material;
+import gov.nasa.worldwind.render.ShapeAttributes;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.WWUtil;
 
 /**
  * @author tag

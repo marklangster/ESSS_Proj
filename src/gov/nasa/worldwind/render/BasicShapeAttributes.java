@@ -1,18 +1,23 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 package gov.nasa.worldwind.render;
 
-import gov.nasa.worldwind.Exportable;
 import gov.nasa.worldwind.ogc.kml.KMLConstants;
 import gov.nasa.worldwind.ogc.kml.impl.KMLExportUtil;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.RestorableSupport;
+import gov.nasa.worldwind.util.WWUtil;
 
-import javax.xml.stream.*;
-import java.awt.*;
-import java.io.*;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+import java.awt.Color;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
 
 import static gov.nasa.worldwind.ogc.kml.impl.KMLExportUtil.kmlBoolean;
 
@@ -56,8 +61,7 @@ public class BasicShapeAttributes implements ShapeAttributes
     /**
      * Creates a new <code>BasicShapeAttributes</code> with the default attributes. The default attributes are as
      * follows:
-     * <p/>
-     * <table> <tr><th>Attribute</th><th>Default Value</th></tr> <tr><td>unresolved</td><td><code>true</code></td></tr>
+     * <table> <caption style="font-weight: bold;">Default Attributes</caption><tr><th>Attribute</th><th>Default Value</th></tr> <tr><td>unresolved</td><td><code>true</code></td></tr>
      * <tr><td>drawInterior</td><td><code>true</code></td></tr> <tr><td>drawOutline</td><td><code>true</code></td></tr>
      * <tr><td>enableAntialiasing</td><td><code>true</code></td></tr> <tr><td>enableLighting</td><td><code>false</code></td></tr>
      * <tr><td>interiorMaterial</td><td>{@link gov.nasa.worldwind.render.Material#WHITE}</td></tr>
@@ -536,14 +540,6 @@ public class BasicShapeAttributes implements ShapeAttributes
         return result;
     }
 
-    /** {@inheritDoc} */
-    public String isExportFormatSupported(String mimeType)
-    {
-        if (KMLConstants.KML_MIME_TYPE.equalsIgnoreCase(mimeType))
-            return Exportable.FORMAT_SUPPORTED;
-        else
-            return Exportable.FORMAT_NOT_SUPPORTED;
-    }
 
     /** {@inheritDoc} */
     public void export(String mimeType, Object output) throws IOException, UnsupportedOperationException
@@ -584,7 +580,7 @@ public class BasicShapeAttributes implements ShapeAttributes
 
     /**
      * Export the placemark attributes to KML as a {@code <Style>} element. The {@code output} object will receive the
-     * data. This object must be one of: java.io.Writer<br/> java.io.OutputStream<br/> javax.xml.stream.XMLStreamWriter
+     * data. This object must be one of: java.io.Writer<br> java.io.OutputStream<br> javax.xml.stream.XMLStreamWriter
      *
      * @param output Object to receive the generated KML.
      *

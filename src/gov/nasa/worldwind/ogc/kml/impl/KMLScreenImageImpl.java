@@ -1,15 +1,18 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 package gov.nasa.worldwind.ogc.kml.impl;
 
-import gov.nasa.worldwind.ogc.kml.*;
-import gov.nasa.worldwind.render.*;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.ogc.kml.KMLIcon;
+import gov.nasa.worldwind.ogc.kml.KMLScreenOverlay;
+import gov.nasa.worldwind.ogc.kml.KMLVec2;
+import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.WWUtil;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 
 /**
@@ -188,9 +191,8 @@ public class KMLScreenImageImpl extends ScreenImage implements KMLRenderable
     /**
      * Get the size mode for a size parameter. The KML size tag takes a numeric size attribute, but certain values of
      * this attribute change the interpretation of the tag.
-     * <p/>
-     * <ul> <li> A value of -1 indicates to use the native dimension</li>. <li> A value of 0 indicates to maintain the
-     * aspect ratio</li>. <li> A value of n sets the value of the dimension</li>. </ul>
+     * <ul><li> A value of -1 indicates to use the native dimension.</li> <li> A value of 0 indicates to maintain the
+     * aspect ratio.</li> <li> A value of n sets the value of the dimension.</li></ul>
      *
      * @param size The KML size attribute
      *

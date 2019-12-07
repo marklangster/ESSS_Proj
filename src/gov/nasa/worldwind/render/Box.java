@@ -8,15 +8,21 @@ package gov.nasa.worldwind.render;
 
 import com.jogamp.common.nio.Buffers;
 import gov.nasa.worldwind.Exportable;
-import gov.nasa.worldwind.geom.*;
+import gov.nasa.worldwind.geom.Angle;
+import gov.nasa.worldwind.geom.Matrix;
+import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.render.airspaces.Geometry;
 import gov.nasa.worldwind.terrain.Terrain;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.util.GeometryBuilder;
+import gov.nasa.worldwind.util.Logging;
 
-import javax.media.opengl.*;
-import javax.xml.stream.*;
+import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import java.io.IOException;
-import java.nio.*;
+import java.nio.Buffer;
+import java.nio.FloatBuffer;
 import java.util.List;
 
 /**

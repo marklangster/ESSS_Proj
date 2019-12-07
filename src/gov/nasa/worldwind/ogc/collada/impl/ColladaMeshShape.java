@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -9,27 +9,59 @@ package gov.nasa.worldwind.ogc.collada.impl;
 import com.jogamp.common.nio.Buffers;
 import gov.nasa.worldwind.cache.GpuResourceCache;
 import gov.nasa.worldwind.geom.Box;
-import gov.nasa.worldwind.geom.*;
-import gov.nasa.worldwind.globes.*;
-import gov.nasa.worldwind.ogc.collada.*;
+import gov.nasa.worldwind.geom.Extent;
+import gov.nasa.worldwind.geom.Intersection;
+import gov.nasa.worldwind.geom.Line;
+import gov.nasa.worldwind.geom.Matrix;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.geom.Vec4;
+import gov.nasa.worldwind.globes.Globe;
+import gov.nasa.worldwind.globes.GlobeStateKey;
+import gov.nasa.worldwind.ogc.collada.ColladaAbstractGeometry;
+import gov.nasa.worldwind.ogc.collada.ColladaBindMaterial;
+import gov.nasa.worldwind.ogc.collada.ColladaBindVertexInput;
+import gov.nasa.worldwind.ogc.collada.ColladaEffect;
+import gov.nasa.worldwind.ogc.collada.ColladaExtra;
+import gov.nasa.worldwind.ogc.collada.ColladaImage;
+import gov.nasa.worldwind.ogc.collada.ColladaInstanceEffect;
+import gov.nasa.worldwind.ogc.collada.ColladaInstanceMaterial;
+import gov.nasa.worldwind.ogc.collada.ColladaLines;
+import gov.nasa.worldwind.ogc.collada.ColladaMaterial;
+import gov.nasa.worldwind.ogc.collada.ColladaNewParam;
+import gov.nasa.worldwind.ogc.collada.ColladaProfileCommon;
+import gov.nasa.worldwind.ogc.collada.ColladaSampler2D;
+import gov.nasa.worldwind.ogc.collada.ColladaSource;
+import gov.nasa.worldwind.ogc.collada.ColladaSurface;
+import gov.nasa.worldwind.ogc.collada.ColladaTechnique;
+import gov.nasa.worldwind.ogc.collada.ColladaTechniqueCommon;
+import gov.nasa.worldwind.ogc.collada.ColladaTexture;
+import gov.nasa.worldwind.ogc.collada.ColladaTriangles;
 import gov.nasa.worldwind.pick.PickSupport;
-import gov.nasa.worldwind.render.*;
+import gov.nasa.worldwind.render.AbstractGeneralShape;
+import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.Material;
+import gov.nasa.worldwind.render.ShapeAttributes;
 import gov.nasa.worldwind.terrain.Terrain;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.OGLStackHandler;
+import gov.nasa.worldwind.util.WWBufferUtil;
+import gov.nasa.worldwind.util.WWUtil;
 
-import javax.media.opengl.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Point;
 import java.nio.FloatBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Shape to render a COLLADA line or triangle mesh. An instance of this shape can render any number of {@link
  * ColladaLines} or {@link ColladaTriangles}, but a single instance cannot render both lines and triangles. New
- * instances are created by {@link #createTriangleMesh(java.util.List, gov.nasa.worldwind.ogc.collada.ColladaBindMaterial)
- * createTriangleMesh} and {@link #createLineMesh(java.util.List, gov.nasa.worldwind.ogc.collada.ColladaBindMaterial)
+ * instances are created by {@link #createTriangleMesh(List, gov.nasa.worldwind.ogc.collada.ColladaBindMaterial)
+ * createTriangleMesh} and {@link #createLineMesh(List, gov.nasa.worldwind.ogc.collada.ColladaBindMaterial)
  * createLineMesh}.
- * <p/>
+ * <p>
  * This shape supports only COLLADA line and triangle geometries.
  *
  * @author pabercrombie
@@ -227,6 +259,7 @@ public class ColladaMeshShape extends AbstractGeneralShape
      *
      * @param geometries   COLLADA elements that defines geometry for this shape. Must contain at least one element.
      * @param bindMaterial Material applied to the mesh. May be null.
+     * @return The resulting shape.
      */
     public static ColladaMeshShape createTriangleMesh(List<ColladaTriangles> geometries,
         ColladaBindMaterial bindMaterial)
@@ -245,6 +278,7 @@ public class ColladaMeshShape extends AbstractGeneralShape
      *
      * @param geometries   COLLADA elements that defines geometry for this shape. Must contain at least one element.
      * @param bindMaterial Material applied to the mesh. May be null.
+     * @return The resulting shape.
      */
     public static ColladaMeshShape createLineMesh(List<ColladaLines> geometries,
         ColladaBindMaterial bindMaterial)
@@ -283,7 +317,7 @@ public class ColladaMeshShape extends AbstractGeneralShape
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * COLLADA shapes do not support intersection tests because the shape may be rendered multiple times with different
      * transform matrices. It's not possible to determine intersection without the transform matrix applied when the
      * shape is rendered.
@@ -721,7 +755,7 @@ public class ColladaMeshShape extends AbstractGeneralShape
 
     /**
      * Compute enough geometry to determine this shape's extent, reference point and eye distance.
-     * <p/>
+     * <p>
      * A {@link gov.nasa.worldwind.render.AbstractShape.AbstractShapeData} must be current when this method is called.
      *
      * @param dc        the current draw context.
@@ -967,7 +1001,7 @@ public class ColladaMeshShape extends AbstractGeneralShape
 
     /**
      * Computes the minimum distance between this shape and the eye point.
-     * <p/>
+     * <p>
      * A {@link gov.nasa.worldwind.render.AbstractShape.AbstractShapeData} must be current when this method is called.
      *
      * @param dc the current draw context.
@@ -1043,6 +1077,7 @@ public class ColladaMeshShape extends AbstractGeneralShape
     /**
      * Indicates the texture applied to this shape.
      *
+     * @param geometry The geometry to set the texture from.
      * @return The texture that must be applied to the shape, or null if there is no texture, or the texture is not
      *         available.
      */

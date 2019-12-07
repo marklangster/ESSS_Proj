@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -9,7 +9,9 @@ package gov.nasa.worldwind.ogc.kml.impl;
 import gov.nasa.worldwind.ogc.kml.KMLRegion;
 import gov.nasa.worldwind.util.Logging;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.NoSuchElementException;
 
 /**
  * <code>KMLTraversalContext</code> provides a suitcase of KML specific state used to render a hierarchy of KML

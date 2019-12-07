@@ -10,7 +10,6 @@ import gov.nasa.worldwind.avlist.*;
 import gov.nasa.worldwind.event.*;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.globes.Globe;
-import gov.nasa.worldwind.render.ScreenAnnotation;
 import gov.nasa.worldwind.util.Logging;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 

@@ -12,7 +12,6 @@ import gov.nasa.worldwind.cache.FileStore;
 import gov.nasa.worldwind.formats.dds.DDSCompressor;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.layers.*;
-import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.retrieve.*;
 import gov.nasa.worldwind.util.*;
 

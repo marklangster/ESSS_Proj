@@ -1,20 +1,27 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 
 package gov.nasa.worldwind.ogc.kml.io;
 
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.WWIO;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 /**
  * Implements the {@link KMLDoc} interface for KMZ files located within a computer's file system.
- * <p/>
+ * <p>
  * Note: This class does not yet resolve references to files in other KMZ archives. For example, it does not resolve
  * references like this: <i>../other.kmz/file.png</i>.
  *
@@ -87,7 +94,7 @@ public class KMZFile implements KMLDoc
     /**
      * Returns an {@link InputStream} to a specified file within the KMZ file. The file's path is resolved relative to
      * the internal root of the KMZ file.
-     * <p/>
+     * <p>
      * Note: This class does not yet resolve references to files in other KMZ archives. For example, it does not resolve
      * references like this: <i>../other.kmz/file.png</i>.
      *
@@ -128,7 +135,7 @@ public class KMZFile implements KMLDoc
     /**
      * Returns an absolute path to a specified file within the KMZ file. The file's path is resolved relative to the
      * internal root of the KMZ file.
-     * <p/>
+     * <p>
      * Note: This class does not yet resolve references to files in other KMZ archives. For example, it does not resolve
      * references like this: <i>../other.kmz/file.png</i>. // TODO
      *

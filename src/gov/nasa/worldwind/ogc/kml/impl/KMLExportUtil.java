@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -8,10 +8,11 @@ package gov.nasa.worldwind.ogc.kml.impl;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.ogc.kml.KMLConstants;
-import gov.nasa.worldwind.render.*;
+import gov.nasa.worldwind.render.ShapeAttributes;
 import gov.nasa.worldwind.util.Logging;
 
-import javax.xml.stream.*;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import java.io.IOException;
 
 /**
@@ -64,9 +65,9 @@ public class KMLExportUtil
      *                   or {@link KMLConstants#HIGHLIGHT}
      * @param attributes Attributes to export. The method takes no action if this parameter is null.
      *
-     * @throws javax.xml.stream.XMLStreamException
+     * @throws XMLStreamException
      *                             if exception occurs writing XML.
-     * @throws java.io.IOException if exception occurs exporting data.
+     * @throws IOException if exception occurs exporting data.
      */
     public static void exportAttributesAsKML(XMLStreamWriter xmlWriter, String styleType, ShapeAttributes attributes)
         throws XMLStreamException, IOException
@@ -90,7 +91,7 @@ public class KMLExportUtil
      * @param offset    The offset to export. If {@code offset} is null, nothing is written to the stream.
      * @param tagName   The name of the KML tag to create.
      *
-     * @throws javax.xml.stream.XMLStreamException
+     * @throws XMLStreamException
      *          if exception occurs writing XML.
      */
     public static void exportOffset(XMLStreamWriter xmlWriter, Offset offset, String tagName) throws XMLStreamException
@@ -113,7 +114,7 @@ public class KMLExportUtil
      * @param dimension The dimension to export. If {@code dimension} is null, nothing is written to the stream.
      * @param tagName   The name of the KML tag to create.
      *
-     * @throws javax.xml.stream.XMLStreamException
+     * @throws XMLStreamException
      *          if exception occurs writing XML.
      */
     public static void exportDimension(XMLStreamWriter xmlWriter, Size dimension, String tagName)
@@ -140,7 +141,7 @@ public class KMLExportUtil
      * @param size      The size of the dimension.
      * @param units     Units of {@code size}.
      *
-     * @throws javax.xml.stream.XMLStreamException
+     * @throws XMLStreamException
      *          if exception occurs writing XML.
      */
     private static void exportDimensionAttributes(String axes, XMLStreamWriter xmlWriter, String sizeMode, double size,
@@ -169,7 +170,7 @@ public class KMLExportUtil
      *
      * @param hexString String to manipulate.
      *
-     * @return The portion of {@code hexString} after the 0X. For example: "0X00FF00" => "00FF00". If the string does
+     * @return The portion of {@code hexString} after the 0X. For example: "0X00FF00" =&gt; "00FF00". If the string does
      *         not begin with 0X, {@code hexString} is returned. The comparison is not case sensitive.
      */
     public static String stripHexPrefix(String hexString)

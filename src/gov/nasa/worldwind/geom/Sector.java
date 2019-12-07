@@ -9,7 +9,6 @@ import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.cache.Cacheable;
 import gov.nasa.worldwind.geom.coords.UTMCoord;
 import gov.nasa.worldwind.globes.*;
-import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.tracks.TrackPoint;
 import gov.nasa.worldwind.util.Logging;
 

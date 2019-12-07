@@ -7,23 +7,41 @@
 package gov.nasa.worldwind.render;
 
 import com.jogamp.common.nio.Buffers;
-import gov.nasa.worldwind.*;
+import gov.nasa.worldwind.Configuration;
+import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.cache.ShapeDataCache;
 import gov.nasa.worldwind.exception.WWRuntimeException;
 import gov.nasa.worldwind.geom.Box;
-import gov.nasa.worldwind.geom.*;
+import gov.nasa.worldwind.geom.Extent;
+import gov.nasa.worldwind.geom.Intersection;
+import gov.nasa.worldwind.geom.LatLon;
+import gov.nasa.worldwind.geom.Line;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.geom.Sector;
+import gov.nasa.worldwind.geom.Triangle;
+import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.ogc.kml.impl.KMLExportUtil;
 import gov.nasa.worldwind.terrain.Terrain;
 import gov.nasa.worldwind.util.*;
 
-import javax.media.opengl.*;
+import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
-import javax.xml.stream.*;
-import java.io.*;
-import java.nio.*;
-import java.util.*;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+import java.io.File;
+import java.io.IOException;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * A multi-sided 3D shell formed by a base polygon in latitude and longitude extruded from the terrain to either a
@@ -2090,8 +2108,7 @@ public class ExtrudedPolygon extends AbstractShape
 
     /**
      * Tessellates this extruded polygon's cap. This method catches {@link OutOfMemoryError} exceptions and if the draw
-     * context is not null passes the exception to the rendering exception listener (see {@link
-     * WorldWindow#addRenderingExceptionListener(gov.nasa.worldwind.event.RenderingExceptionListener)}).
+     * context is not null passes the exception to the rendering exception listener.
      *
      * @param dc        the draw context.
      * @param shapeData the boundary set to tessellate

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -8,11 +8,14 @@ package gov.nasa.worldwind.ogc.kml.io;
 
 import gov.nasa.worldwind.util.Logging;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Implements the {@link KMLDoc} interface for KML files located within a computer's file system.
- * <p/>
+ * <p>
  * Note: This class does not resolve references to files in KMZ archives. For example, it does not resolve references
  * like this: <i>../other.kmz/file.png</i>.
  *

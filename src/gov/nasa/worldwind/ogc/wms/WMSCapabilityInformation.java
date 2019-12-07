@@ -1,18 +1,21 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 
 package gov.nasa.worldwind.ogc.wms;
 
-import gov.nasa.worldwind.ogc.*;
+import gov.nasa.worldwind.ogc.OGCCapabilityInformation;
+import gov.nasa.worldwind.ogc.OGCRequestDescription;
 import gov.nasa.worldwind.util.xml.*;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Parses the Capability section of a WMS capabilities document.

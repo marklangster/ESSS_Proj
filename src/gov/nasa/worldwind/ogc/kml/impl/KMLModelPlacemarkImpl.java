@@ -1,24 +1,42 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 
 package gov.nasa.worldwind.ogc.kml.impl;
 
-import gov.nasa.worldwind.*;
-import gov.nasa.worldwind.geom.*;
-import gov.nasa.worldwind.ogc.collada.*;
+import gov.nasa.worldwind.WWObjectImpl;
+import gov.nasa.worldwind.WorldWind;
+import gov.nasa.worldwind.geom.Angle;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.geom.Vec4;
+import gov.nasa.worldwind.ogc.collada.ColladaResourceResolver;
+import gov.nasa.worldwind.ogc.collada.ColladaRoot;
 import gov.nasa.worldwind.ogc.collada.impl.ColladaTraversalContext;
-import gov.nasa.worldwind.ogc.kml.*;
+import gov.nasa.worldwind.ogc.kml.KMLAbstractGeometry;
+import gov.nasa.worldwind.ogc.kml.KMLAlias;
+import gov.nasa.worldwind.ogc.kml.KMLLink;
+import gov.nasa.worldwind.ogc.kml.KMLModel;
+import gov.nasa.worldwind.ogc.kml.KMLOrientation;
+import gov.nasa.worldwind.ogc.kml.KMLPlacemark;
+import gov.nasa.worldwind.ogc.kml.KMLResourceMap;
+import gov.nasa.worldwind.ogc.kml.KMLScale;
 import gov.nasa.worldwind.render.DrawContext;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.WWUtil;
 
 import javax.xml.stream.XMLStreamException;
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.concurrent.atomic.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Class to load and render a COLLADA model as the geometry of a KML Placemark.
@@ -217,7 +235,7 @@ public class KMLModelPlacemarkImpl extends WWObjectImpl implements KMLRenderable
      * resources will be resolved relative to the .dae file within the archive. Normally references in a KMZ are
      * resolved relative to the root of the archive, but Model references are an exception. See
      * https://developers.google.com/kml/documentation/kmzarchives and https://developers.google.com/kml/documentation/kmlreference#model
-     * <p/>
+     * <p>
      * {@inheritDoc}.
      */
     public String resolveFilePath(String path) throws IOException
@@ -296,14 +314,15 @@ public class KMLModelPlacemarkImpl extends WWObjectImpl implements KMLRenderable
     }
 
     /**
-     * Initiates a retrieval of the model referenced by this placemark. Once the resource is retrieved and loaded, this
+     * Initiates a retrieval of the model referenced by this placemark.Once the resource is retrieved and loaded, this
      * calls <code>{@link #setColladaRoot(ColladaRoot)}</code> to specify this link's new network resource, and sends an
      * <code>{@link gov.nasa.worldwind.avlist.AVKey#RETRIEVAL_STATE_SUCCESSFUL}</code> property change event to this
-     * link's property change listeners.
-     * <p/>
+     * link's property change listeners.<p>
      * This does nothing if this <code>KMLNetworkLink</code> has no <code>KMLLink</code>.
      *
      * @param address the address of the resource to retrieve
+     * @throws IOException if a reading error occurs.
+     * @throws XMLStreamException if a parsing error occurs.
      */
     protected void retrieveModel(String address) throws IOException, XMLStreamException
     {

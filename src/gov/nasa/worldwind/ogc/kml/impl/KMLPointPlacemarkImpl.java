@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -9,12 +9,24 @@ package gov.nasa.worldwind.ogc.kml.impl;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.event.Message;
-import gov.nasa.worldwind.ogc.kml.*;
+import gov.nasa.worldwind.ogc.kml.KMLAbstractGeometry;
+import gov.nasa.worldwind.ogc.kml.KMLAbstractObject;
+import gov.nasa.worldwind.ogc.kml.KMLAbstractSubStyle;
+import gov.nasa.worldwind.ogc.kml.KMLConstants;
+import gov.nasa.worldwind.ogc.kml.KMLIcon;
+import gov.nasa.worldwind.ogc.kml.KMLIconStyle;
+import gov.nasa.worldwind.ogc.kml.KMLLabelStyle;
+import gov.nasa.worldwind.ogc.kml.KMLLineStyle;
+import gov.nasa.worldwind.ogc.kml.KMLPlacemark;
+import gov.nasa.worldwind.ogc.kml.KMLPoint;
+import gov.nasa.worldwind.ogc.kml.KMLVec2;
 import gov.nasa.worldwind.pick.PickedObject;
-import gov.nasa.worldwind.render.*;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.Material;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.WWUtil;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 
 /**

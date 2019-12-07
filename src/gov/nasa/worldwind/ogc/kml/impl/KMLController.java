@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -7,12 +7,13 @@
 package gov.nasa.worldwind.ogc.kml.impl;
 
 import gov.nasa.worldwind.WWObjectImpl;
-import gov.nasa.worldwind.event.*;
+import gov.nasa.worldwind.event.Message;
+import gov.nasa.worldwind.event.MessageListener;
 import gov.nasa.worldwind.ogc.kml.KMLRoot;
-import gov.nasa.worldwind.render.*;
+import gov.nasa.worldwind.render.DrawContext;
 
 /**
- * Executes the mapping from KML to World Wind. Traverses a parsed KML document and creates the appropriate World Wind
+ * Executes the mapping from KML to WorldWind. Traverses a parsed KML document and creates the appropriate WorldWind
  * object to represent the KML.
  *
  * @author tag

@@ -17,7 +17,7 @@ import java.util.Collection;
  * @author dcollins
  * @version $Id: Airspace.java 2394 2014-10-22 01:16:43Z tgaskins $
  */
-public interface Airspace extends Renderable, Restorable, AVList, ExtentHolder, Highlightable, Attributable
+public interface Airspace extends Renderable, Restorable, AVList, ExtentHolder, Attributable
 {
     public static final String DRAW_STYLE_FILL = "Airspace.DrawStyleFill";
     public static final String DRAW_STYLE_OUTLINE = "Airspace.DrawStyleOutline";

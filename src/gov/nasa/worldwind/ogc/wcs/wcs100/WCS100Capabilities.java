@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -8,15 +8,20 @@ package gov.nasa.worldwind.ogc.wcs.wcs100;
 
 import gov.nasa.worldwind.ogc.OGCConstants;
 import gov.nasa.worldwind.ogc.gml.GMLPos;
-import gov.nasa.worldwind.ogc.ows.*;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.ogc.ows.OWSAddress;
+import gov.nasa.worldwind.ogc.ows.OWSContactInfo;
+import gov.nasa.worldwind.ogc.ows.OWSPhone;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.WWXML;
 import gov.nasa.worldwind.util.xml.*;
 import gov.nasa.worldwind.wms.CapabilitiesRequest;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.*;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
-import java.net.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * @author tag
@@ -33,6 +38,7 @@ public class WCS100Capabilities extends AbstractXMLEventParser
      * @param uri The URI of the server.
      *
      * @return The WCS capabilities document for the specified server.
+     * @throws Exception if a general error occurs.
      *
      * @throws IllegalArgumentException if the specified URI is invalid.
      * @throws gov.nasa.worldwind.exception.WWRuntimeException
@@ -130,7 +136,7 @@ public class WCS100Capabilities extends AbstractXMLEventParser
      *
      * @return <code>this</code> if parsing is successful, otherwise  null.
      *
-     * @throws javax.xml.stream.XMLStreamException
+     * @throws XMLStreamException
      *          if an exception occurs while attempting to read the event stream.
      */
     public WCS100Capabilities parse(Object... args) throws XMLStreamException

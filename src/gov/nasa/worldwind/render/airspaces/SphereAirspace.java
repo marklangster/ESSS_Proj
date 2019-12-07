@@ -5,14 +5,23 @@
  */
 package gov.nasa.worldwind.render.airspaces;
 
-import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.geom.Cylinder;
+import gov.nasa.worldwind.geom.Extent;
+import gov.nasa.worldwind.geom.LatLon;
+import gov.nasa.worldwind.geom.Matrix;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.geom.Sphere;
+import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
-import gov.nasa.worldwind.render.*;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.util.GeometryBuilder;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.RestorableSupport;
 
-import javax.media.opengl.*;
-import java.util.*;
+import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A spherical airspace shape defined by a center location and a radius. The sphere's center altitude and terrain

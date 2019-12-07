@@ -7,7 +7,6 @@ package gov.nasa.worldwind.layers;
 
 import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.geom.*;
-import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.*;
 
 import javax.media.opengl.*;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -8,9 +8,10 @@ package gov.nasa.worldwind.ogc.kml;
 
 import gov.nasa.worldwind.util.xml.XMLEventParserContext;
 
-import javax.xml.stream.events.XMLEvent;
 import javax.xml.stream.XMLStreamException;
-import java.util.*;
+import javax.xml.stream.events.XMLEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents the KML <i>ExtendedData</i> element and provides access to its contents.

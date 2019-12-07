@@ -12,7 +12,6 @@ import gov.nasa.worldwind.event.*;
 import gov.nasa.worldwind.exception.WWAbsentRequirementException;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.pick.*;
-import gov.nasa.worldwind.render.ScreenCreditController;
 import gov.nasa.worldwind.util.*;
 import gov.nasa.worldwind.util.dashboard.DashboardController;
 

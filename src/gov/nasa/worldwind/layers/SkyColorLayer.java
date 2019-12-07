@@ -6,7 +6,6 @@
 package gov.nasa.worldwind.layers;
 
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.Logging;
 
 import javax.media.opengl.*;

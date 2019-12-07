@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -10,7 +10,8 @@ import gov.nasa.worldwind.util.WWXML;
 import gov.nasa.worldwind.util.xml.*;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.*;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 /**
@@ -112,7 +113,7 @@ public abstract class OWSCapabilities extends AbstractXMLEventParser
      *
      * @return <code>this</code> if parsing is successful, otherwise  null.
      *
-     * @throws javax.xml.stream.XMLStreamException
+     * @throws XMLStreamException
      *          if an exception occurs while attempting to read the event stream.
      */
     public OWSCapabilities parse(Object... args) throws XMLStreamException

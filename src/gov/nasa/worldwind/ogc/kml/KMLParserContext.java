@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -167,7 +167,7 @@ public class KMLParserContext extends BasicXMLEventParserContext
 
     /**
      * Loads the parser map with the parser to use for each element type. The parser may be changed by calling {@link
-     * #registerParser(javax.xml.namespace.QName, gov.nasa.worldwind.util.xml.XMLEventParser)}.
+     * #registerParser(QName, gov.nasa.worldwind.util.xml.XMLEventParser)}.
      */
     protected void initializeParsers()
     {

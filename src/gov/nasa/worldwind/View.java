@@ -6,12 +6,9 @@
 
 package gov.nasa.worldwind;
 
-import gov.nasa.worldwind.animation.Animator;
-import gov.nasa.worldwind.awt.ViewInputHandler;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.render.DrawContext;
-import gov.nasa.worldwind.view.ViewPropertyLimits;
 
 /**
  * The <code>View</code> interface provides a coordinate transformation from model coordinates to eye coordinates. This
@@ -390,12 +387,6 @@ public interface View extends WWObject, Restorable
      */
     Globe getGlobe();
 
-    /**
-     * Gets the <code>ViewInputHandler</code> being used to map input events to <code>View</code> controls.
-     *
-     * @return the <code>ViewInputHandler</code> being used to map input events to <code>View</code> controls.
-     */
-    ViewInputHandler getViewInputHandler();
 
     /** Stops any animations that are active in this <code>View</code> */
     void stopAnimations();
@@ -417,27 +408,11 @@ public interface View extends WWObject, Restorable
     boolean isAnimating();
 
     /**
-     * Get the {@link ViewPropertyLimits} for this view.
-     *
-     * @return the {@link ViewPropertyLimits} for this view.
-     */
-    ViewPropertyLimits getViewPropertyLimits();
-
-    /**
      * Copy the state of the given <code>View</code>.
      *
      * @param view The <code>View</code> whose state is to be copied.
      */
     void copyViewState(View view);
-
-    /**
-     * Add an animator to the <code>View</code>. This method does not start the {@link
-     * gov.nasa.worldwind.animation.Animator}.  Starting the {@link gov.nasa.worldwind.animation.Animator} is the
-     * responsibility of the application.
-     *
-     * @param animator the {@link gov.nasa.worldwind.animation.Animator} to be added
-     */
-    void addAnimator(Animator animator);
 
     /**
      * Returns the horizon distance for this view's most recently used eye position. The eye position changes when this

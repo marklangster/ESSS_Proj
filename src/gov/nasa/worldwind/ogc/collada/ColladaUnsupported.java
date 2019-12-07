@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -7,7 +7,7 @@
 package gov.nasa.worldwind.ogc.collada;
 
 /**
- * Parser class for COLLADA elements that are not used by World Wind.
+ * Parser class for COLLADA elements that are not used by WorldWind.
  *
  * @author pabercrombie
  * @version $Id: ColladaUnsupported.java 642 2012-06-14 17:31:29Z pabercrombie $

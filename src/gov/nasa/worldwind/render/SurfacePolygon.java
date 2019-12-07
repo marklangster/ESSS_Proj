@@ -1,27 +1,44 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 package gov.nasa.worldwind.render;
 
 import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.glu.*;
 import gov.nasa.worldwind.Exportable;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.exception.WWRuntimeException;
-import gov.nasa.worldwind.geom.*;
+import gov.nasa.worldwind.geom.Angle;
+import gov.nasa.worldwind.geom.LatLon;
+import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.ogc.kml.KMLConstants;
 import gov.nasa.worldwind.ogc.kml.impl.KMLExportUtil;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.OGLUtil;
+import gov.nasa.worldwind.util.RestorableSupport;
+import gov.nasa.worldwind.util.SurfaceTileDrawContext;
+import gov.nasa.worldwind.util.WWMath;
 
-import javax.media.opengl.*;
-import javax.media.opengl.glu.*;
-import javax.xml.stream.*;
-import java.io.*;
-import java.nio.*;
-import java.util.*;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author dcollins
@@ -100,7 +117,7 @@ public class SurfacePolygon extends AbstractSurfaceShape implements Exportable
 
     /**
      * Constructs a new surface polygon with the default attributes and the specified iterable of locations.
-     * <p/>
+     * <p>
      * Note: If fewer than three locations is specified, no polygon is drawn.
      *
      * @param iterable the polygon locations.
@@ -123,7 +140,7 @@ public class SurfacePolygon extends AbstractSurfaceShape implements Exportable
      * Constructs a new surface polygon with the specified normal (as opposed to highlight) attributes and the specified
      * iterable of locations. Modifying the attribute reference after calling this constructor causes this shape's
      * appearance to change accordingly.
-     * <p/>
+     * <p>
      * Note: If fewer than three locations is specified, no polygon is drawn.
      *
      * @param normalAttrs the normal attributes. May be null, in which case default attributes are used.

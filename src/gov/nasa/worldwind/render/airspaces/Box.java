@@ -5,16 +5,27 @@
  */
 package gov.nasa.worldwind.render.airspaces;
 
+import Terrain.Terrain;
 import gov.nasa.worldwind.cache.Cacheable;
-import gov.nasa.worldwind.geom.*;
-import gov.nasa.worldwind.globes.*;
-import gov.nasa.worldwind.render.*;
-import gov.nasa.worldwind.terrain.Terrain;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.geom.Angle;
+import gov.nasa.worldwind.geom.Extent;
+import gov.nasa.worldwind.geom.LatLon;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.geom.Vec4;
+import gov.nasa.worldwind.globes.Globe;
+import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.SurfaceShape;
+import gov.nasa.worldwind.util.GeometryBuilder;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.OGLStackHandler;
+import gov.nasa.worldwind.util.RestorableSupport;
 
-import javax.media.opengl.*;
-import java.nio.*;
-import java.util.*;
+import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lado
@@ -517,6 +528,12 @@ public class Box extends AbstractAirspace
         }
     }
 
+    @Override
+    public Extent getExtent()
+    {
+        return null;
+    }
+
     //**************************************************************//
     //********************  Box  ***********************************//
     //**************************************************************//
@@ -607,19 +624,11 @@ public class Box extends AbstractAirspace
     private BoxGeometry getBoxGeometry(DrawContext dc, double[] altitudes, boolean[] terrainConformant,
         int lengthSegments, int widthSegments)
     {
-        Object cacheKey = new Geometry.CacheKey(dc.getGlobe(), this.getClass(), "Box.Geometry", this.geometryCacheKey,
-            altitudes, terrainConformant, lengthSegments, widthSegments);
-        BoxGeometry geom = (BoxGeometry) this.getGeometryCache().getObject(cacheKey);
 
-        if (geom != null && !this.isExpired(dc, geom.sideGeometry))
-            return geom;
-
-        if (geom == null)
-            geom = new BoxGeometry();
+        BoxGeometry geom = new BoxGeometry();
 
         this.makeBoxGeometry(dc, altitudes, terrainConformant, lengthSegments, widthSegments, geom);
         this.updateExpiryCriteria(dc, geom.sideGeometry);
-        this.getGeometryCache().add(cacheKey, geom);
 
         return geom;
     }

@@ -1,22 +1,31 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 
 package gov.nasa.worldwind.ogc.wms;
 
-import gov.nasa.worldwind.ogc.*;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.ogc.OGCCapabilities;
+import gov.nasa.worldwind.ogc.OGCConstants;
+import gov.nasa.worldwind.ogc.OGCOnlineResource;
+import gov.nasa.worldwind.ogc.OGCRequestDescription;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.WWUtil;
 import gov.nasa.worldwind.util.xml.*;
 import gov.nasa.worldwind.wms.CapabilitiesRequest;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
-import java.net.*;
-import java.text.*;
-import java.util.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author tag
@@ -33,6 +42,7 @@ public class WMSCapabilities extends OGCCapabilities
      * @param uri The URI of the server.
      *
      * @return The WMS capabilities document for the specified server.
+     * @throws Exception if a general error occurs.
      *
      * @throws IllegalArgumentException if the specified URI is invalid.
      * @throws gov.nasa.worldwind.exception.WWRuntimeException

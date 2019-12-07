@@ -6,7 +6,6 @@
 package gov.nasa.worldwind.util;
 
 import gov.nasa.worldwind.geom.*;
-import gov.nasa.worldwind.render.DrawContext;
 
 import java.util.*;
 

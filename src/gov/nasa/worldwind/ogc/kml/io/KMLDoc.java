@@ -1,12 +1,13 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 
 package gov.nasa.worldwind.ogc.kml.io;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Defines the interface for opening a KML or KMZ file or stream and for resolving paths to files referenced by the KML
@@ -20,7 +21,7 @@ public interface KMLDoc
     /**
      * Returns an {@link InputStream} to the associated KML document within either a KML file or stream or a KMZ file or
      * stream.
-     * <p/>
+     * <p>
      * Implementations of this interface do not close the stream; the user of the class must close the stream.
      *
      * @return an input stream positioned to the head of the KML document.
@@ -52,7 +53,7 @@ public interface KMLDoc
      * @return an absolute path or URL to the file, or null if the file does not exist.
      *
      * @throws IllegalArgumentException if the specified path is null.
-     * @throws java.io.IOException if an error occurs while attempting to read the support file.
+     * @throws IOException if an error occurs while attempting to read the support file.
      */
     String getSupportFilePath(String path) throws IOException;
 }

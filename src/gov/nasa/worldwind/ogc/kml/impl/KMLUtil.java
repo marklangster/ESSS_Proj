@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -8,13 +8,32 @@ package gov.nasa.worldwind.ogc.kml.impl;
 
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
-import gov.nasa.worldwind.geom.*;
+import gov.nasa.worldwind.geom.Angle;
+import gov.nasa.worldwind.geom.LatLon;
+import gov.nasa.worldwind.geom.Matrix;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.geom.Sector;
+import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
-import gov.nasa.worldwind.ogc.kml.*;
-import gov.nasa.worldwind.render.*;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.ogc.kml.KMLAbstractGeometry;
+import gov.nasa.worldwind.ogc.kml.KMLAbstractLatLonBoxType;
+import gov.nasa.worldwind.ogc.kml.KMLAbstractSubStyle;
+import gov.nasa.worldwind.ogc.kml.KMLConstants;
+import gov.nasa.worldwind.ogc.kml.KMLLineString;
+import gov.nasa.worldwind.ogc.kml.KMLLineStyle;
+import gov.nasa.worldwind.ogc.kml.KMLLinearRing;
+import gov.nasa.worldwind.ogc.kml.KMLLocation;
+import gov.nasa.worldwind.ogc.kml.KMLModel;
+import gov.nasa.worldwind.ogc.kml.KMLMultiGeometry;
+import gov.nasa.worldwind.ogc.kml.KMLPoint;
+import gov.nasa.worldwind.ogc.kml.KMLPolyStyle;
+import gov.nasa.worldwind.ogc.kml.KMLPolygon;
+import gov.nasa.worldwind.render.Material;
+import gov.nasa.worldwind.render.ShapeAttributes;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.WWUtil;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 
 /**
@@ -113,7 +132,7 @@ public class KMLUtil
      * Translate a WorldWind units constant ({@link AVKey#PIXELS}, {@link AVKey#INSET_PIXELS}, or {@link AVKey#FRACTION}
      * to the corresponding KML unit string ("pixels", "insetPixels", or "fraction").
      *
-     * @param units World Wind units to translate.
+     * @param units WorldWind units to translate.
      *
      * @return KML units, or null if the argument is not a valid WW unit.
      */

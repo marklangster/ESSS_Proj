@@ -1,17 +1,22 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 package gov.nasa.worldwind.ogc.kml.impl;
 
-import gov.nasa.worldwind.geom.*;
-import gov.nasa.worldwind.ogc.kml.*;
+import gov.nasa.worldwind.geom.Angle;
+import gov.nasa.worldwind.geom.LatLon;
+import gov.nasa.worldwind.geom.Sector;
+import gov.nasa.worldwind.ogc.kml.KMLGroundOverlay;
+import gov.nasa.worldwind.ogc.kml.KMLIcon;
+import gov.nasa.worldwind.ogc.kml.KMLLatLonBox;
 import gov.nasa.worldwind.ogc.kml.gx.GXLatLongQuad;
-import gov.nasa.worldwind.render.*;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.WWUtil;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.util.List;
 

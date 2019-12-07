@@ -1,15 +1,17 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 package gov.nasa.worldwind.pick;
 
-import gov.nasa.worldwind.avlist.*;
-import gov.nasa.worldwind.geom.*;
+import gov.nasa.worldwind.avlist.AVKey;
+import gov.nasa.worldwind.avlist.AVListImpl;
+import gov.nasa.worldwind.geom.Angle;
+import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.Layer;
 
-import java.awt.*;
+import java.awt.Point;
 
 /**
  * @author lado

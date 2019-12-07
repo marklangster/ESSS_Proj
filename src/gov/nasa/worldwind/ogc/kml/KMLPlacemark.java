@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -9,14 +9,22 @@ package gov.nasa.worldwind.ogc.kml;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.event.Message;
-import gov.nasa.worldwind.ogc.kml.impl.*;
+import gov.nasa.worldwind.ogc.kml.impl.KMLExtrudedPolygonImpl;
+import gov.nasa.worldwind.ogc.kml.impl.KMLLineStringPlacemarkImpl;
+import gov.nasa.worldwind.ogc.kml.impl.KMLModelPlacemarkImpl;
+import gov.nasa.worldwind.ogc.kml.impl.KMLPointPlacemarkImpl;
+import gov.nasa.worldwind.ogc.kml.impl.KMLPolygonImpl;
+import gov.nasa.worldwind.ogc.kml.impl.KMLRenderable;
+import gov.nasa.worldwind.ogc.kml.impl.KMLSurfacePolygonImpl;
+import gov.nasa.worldwind.ogc.kml.impl.KMLTraversalContext;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.Logging;
 import gov.nasa.worldwind.util.xml.XMLEventParserContext;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents the KML <i>Placemark</i> element and provides access to its contents.

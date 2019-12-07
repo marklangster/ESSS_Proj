@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -8,7 +8,8 @@ package gov.nasa.worldwind.ogc.collada.io;
 
 import gov.nasa.worldwind.util.Logging;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 
 /**
@@ -19,7 +20,7 @@ import java.net.URI;
  */
 public class ColladaInputStream implements ColladaDoc
 {
-    /** The {@link java.io.InputStream} specified to the constructor. */
+    /** The {@link InputStream} specified to the constructor. */
     protected InputStream inputStream;
 
     /** The URI of this COLLADA document. May be {@code null}. */

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -7,7 +7,8 @@
 package gov.nasa.worldwind.ogc.kml;
 
 import gov.nasa.worldwind.event.Message;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.WWUtil;
 
 /**
  * @author tag
@@ -27,7 +28,7 @@ public class KMLStyleUrl extends KMLAbstractObject
 
     /**
      * Resolves a <i>styleUrl</i> to a style selector, which is either a style or style map.
-     * <p/>
+     * <p>
      * If the url refers to a remote resource and the resource has not been retrieved and cached locally, this method
      * returns null and initiates a retrieval.
      *

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -9,12 +9,15 @@ package gov.nasa.worldwind.ogc.kml;
 import gov.nasa.worldwind.event.Message;
 import gov.nasa.worldwind.ogc.kml.impl.KMLTraversalContext;
 import gov.nasa.worldwind.render.DrawContext;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.WWUtil;
 import gov.nasa.worldwind.util.xml.XMLEventParserContext;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Represents the KML <i>Container</i> element and provides access to its contents.
@@ -67,7 +70,7 @@ public class KMLAbstractContainer extends KMLAbstractFeature
      * Indicates whether this <code>KMLAbstractContainer</code> is active and should be rendered on the specified
      * <code>DrawContext</code>. This returns <code>true</code> if this container's <code>visibility</code> is
      * unspecified (<code>null</code>) or is set to <code>true</code>.
-     * <p/>
+     * <p>
      * Regions do not apply directly to KML containers, because a descendant features can override the container's
      * Region with its own. Since a descendant Region may be larger or have a less restrictive LOD range than this
      * container, we cannot determine the visibility of the entire tree based on this container's Region. A container's
@@ -87,7 +90,7 @@ public class KMLAbstractContainer extends KMLAbstractFeature
 
     /**
      * Pre-renders the KML features held by this <code>KMLAbstractContainer</code>.
-     * <p/>
+     * <p>
      * Pushes this container's Region on the KML traversal context's region stack before rendering the features, and
      * pops the Region off the stack afterward. Descendant features use the KML traversal context's region stack to
      * inherit Regions from parent containers.
@@ -111,7 +114,7 @@ public class KMLAbstractContainer extends KMLAbstractFeature
 
     /**
      * Renders the KML features held by this <code>KMLAbstractContainer</code>.
-     * <p/>
+     * <p>
      * Pushes this container's Region on the KML traversal context's region stack before rendering the features, and
      * pops the Region off the stack afterward. Descendant features use the KML traversal context's region stack to
      * inherit Regions from parent containers.

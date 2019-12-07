@@ -9,7 +9,6 @@ package gov.nasa.worldwind.util;
 import gov.nasa.worldwindx.examples.ApplicationTemplate;
 import gov.nasa.worldwindx.examples.util.HotSpotController;
 import gov.nasa.worldwind.layers.RenderableLayer;
-import gov.nasa.worldwind.render.Size;
 import gov.nasa.worldwind.util.tree.*;
 
 /**

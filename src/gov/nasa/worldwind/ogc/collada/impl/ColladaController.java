@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -7,12 +7,12 @@
 package gov.nasa.worldwind.ogc.collada.impl;
 
 import gov.nasa.worldwind.ogc.collada.ColladaRoot;
-import gov.nasa.worldwind.render.*;
+import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.Logging;
 
 /**
- * Executes the mapping from COLLADA to World Wind. Traverses a parsed COLLADA document and creates the appropriate
- * World Wind object to represent the COLLADA model.
+ * Executes the mapping from COLLADA to WorldWind. Traverses a parsed COLLADA document and creates the appropriate
+ * WorldWind object to represent the COLLADA model.
  *
  * @author pabercrombie
  * @version $Id: ColladaController.java 661 2012-06-26 18:02:23Z pabercrombie $

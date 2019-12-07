@@ -8,7 +8,6 @@ package gov.nasa.worldwind.render.airspaces;
 import gov.nasa.worldwind.*;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.cache.*;
-import gov.nasa.worldwind.drag.*;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.globes.*;
 import gov.nasa.worldwind.layers.Layer;
@@ -27,7 +26,7 @@ import java.util.List;
  * @version $Id: AbstractAirspace.java 3138 2015-06-02 19:13:16Z tgaskins $
  */
 public abstract class AbstractAirspace extends WWObjectImpl
-    implements Airspace, OrderedRenderable, PreRenderable, Movable, Movable2, Draggable
+    implements Airspace, OrderedRenderable, PreRenderable, Movable, Movable2
 {
     protected static final String ARC_SLICES = "ArcSlices";
     protected static final String DISABLE_TERRAIN_CONFORMANCE = "DisableTerrainConformance";
@@ -70,7 +69,6 @@ public abstract class AbstractAirspace extends WWObjectImpl
     protected boolean visible = true;
     protected boolean highlighted;
     protected boolean dragEnabled = true;
-    protected DraggableSupport draggableSupport = null;
     protected AirspaceAttributes attributes;
     protected AirspaceAttributes highlightAttributes;
     protected AirspaceAttributes activeAttributes = new BasicAirspaceAttributes(); // re-determined each frame
@@ -194,14 +192,6 @@ public abstract class AbstractAirspace extends WWObjectImpl
         }
 
         this.attributes = attributes;
-
-        if (!WorldWind.getMemoryCacheSet().containsCache(GEOMETRY_CACHE_KEY))
-        {
-            long size = Configuration.getLongValue(AVKey.AIRSPACE_GEOMETRY_CACHE_SIZE, DEFAULT_GEOMETRY_CACHE_SIZE);
-            MemoryCache cache = new BasicMemoryCache((long) (0.85 * size), size);
-            cache.setName(GEOMETRY_CACHE_NAME);
-            WorldWind.getMemoryCacheSet().addCache(GEOMETRY_CACHE_KEY, cache);
-        }
     }
 
     protected abstract Extent computeExtent(Globe globe, double verticalExaggeration);
@@ -263,13 +253,11 @@ public abstract class AbstractAirspace extends WWObjectImpl
         this.attributes = attributes;
     }
 
-    @Override
     public void setAttributes(ShapeAttributes attributes)
     {
         this.setAttributes(new BasicAirspaceAttributes(attributes));
     }
 
-    @Override
     public void setHighlightAttributes(ShapeAttributes highlightAttributes)
     {
         this.setHighlightAttributes(
@@ -956,36 +944,6 @@ public abstract class AbstractAirspace extends WWObjectImpl
         this.doMoveTo(globe, oldRef, newRef);
     }
 
-    @Override
-    public boolean isDragEnabled()
-    {
-        return this.dragEnabled;
-    }
-
-    @Override
-    public void setDragEnabled(boolean enabled)
-    {
-        this.dragEnabled = true;
-    }
-
-    @Override
-    public void drag(DragContext dragContext)
-    {
-        if (!this.dragEnabled)
-            return;
-
-        if (this.draggableSupport == null)
-            this.draggableSupport = new DraggableSupport(this, this.isTerrainConforming()[0]
-                ? WorldWind.RELATIVE_TO_GROUND : WorldWind.ABSOLUTE);
-
-        this.doDrag(dragContext);
-    }
-
-    protected void doDrag(DragContext dragContext)
-    {
-        this.draggableSupport.dragGlobeSizeConstant(dragContext);
-    }
-
     protected void doMoveTo(Globe globe, Position oldRef, Position newRef)
     {
         this.doMoveTo(oldRef, newRef);
@@ -1285,10 +1243,6 @@ public abstract class AbstractAirspace extends WWObjectImpl
         return level;
     }
 
-    protected MemoryCache getGeometryCache()
-    {
-        return WorldWind.getMemoryCache(GEOMETRY_CACHE_KEY);
-    }
 
     protected boolean isExpired(DrawContext dc, Geometry geom)
     {

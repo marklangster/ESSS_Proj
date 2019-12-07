@@ -1,19 +1,22 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 package gov.nasa.worldwind.render;
 
 import gov.nasa.worldwind.Restorable;
-import gov.nasa.worldwind.geom.*;
+import gov.nasa.worldwind.geom.ExtentHolder;
+import gov.nasa.worldwind.geom.LatLon;
+import gov.nasa.worldwind.geom.MeasurableArea;
+import gov.nasa.worldwind.geom.MeasurableLength;
 import gov.nasa.worldwind.globes.Globe;
 
 /**
  * Common interface for surface conforming shapes such as {@link gov.nasa.worldwind.render.SurfacePolygon}, {@link
  * gov.nasa.worldwind.render.SurfacePolyline}, {@link gov.nasa.worldwind.render.SurfaceEllipse}, {@link
  * gov.nasa.worldwind.render.SurfaceQuad}, and {@link gov.nasa.worldwind.render.SurfaceSector}.
- * <p/>
+ * <p>
  * SurfaceShape extends the {@link gov.nasa.worldwind.render.SurfaceObject} interface, and inherits SurfaceObject's
  * batch rendering capabilities.
  *
@@ -21,7 +24,7 @@ import gov.nasa.worldwind.globes.Globe;
  * @version $Id: SurfaceShape.java 2339 2014-09-22 18:22:37Z tgaskins $
  */
 public interface SurfaceShape
-    extends SurfaceObject, Highlightable, ExtentHolder, MeasurableArea, MeasurableLength, Restorable, Attributable
+    extends SurfaceObject, ExtentHolder, MeasurableArea, MeasurableLength, Restorable, Attributable
 {
     /**
      * Indicates whether to highlight the surface shape.

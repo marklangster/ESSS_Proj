@@ -1,17 +1,20 @@
 /*
- * Copyright (C) 2014 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 
 package gov.nasa.worldwind.ogc.wcs.wcs100;
 
-import gov.nasa.worldwind.ogc.gml.*;
+import gov.nasa.worldwind.ogc.gml.GMLEnvelope;
+import gov.nasa.worldwind.ogc.gml.GMLGrid;
+import gov.nasa.worldwind.ogc.gml.GMLRectifiedGrid;
 import gov.nasa.worldwind.util.xml.*;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author tag

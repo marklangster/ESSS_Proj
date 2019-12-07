@@ -6,17 +6,15 @@
 
 package gov.nasa.worldwind.render;
 
+import Terrain.Terrain;
 import gov.nasa.worldwind.*;
 import gov.nasa.worldwind.avlist.AVKey;
-import gov.nasa.worldwind.cache.ShapeDataCache;
-import gov.nasa.worldwind.drag.*;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.globes.*;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.ogc.kml.KMLConstants;
 import gov.nasa.worldwind.ogc.kml.impl.KMLExportUtil;
 import gov.nasa.worldwind.pick.*;
-import gov.nasa.worldwind.terrain.Terrain;
 import gov.nasa.worldwind.util.*;
 
 import javax.media.opengl.*;
@@ -36,8 +34,8 @@ import java.io.*;
  * @version $Id: AbstractShape.java 3306 2015-07-08 22:00:14Z tgaskins $
  */
 public abstract class AbstractShape extends WWObjectImpl
-    implements Highlightable, OrderedRenderable, Movable, Movable2, ExtentHolder, GeographicExtent, Exportable,
-    Restorable, PreRenderable, Attributable, Draggable
+    implements OrderedRenderable, Movable, Movable2, ExtentHolder, GeographicExtent, Exportable,
+    Restorable, PreRenderable, Attributable
 {
     /** The default interior color. */
     protected static final Material DEFAULT_INTERIOR_MATERIAL = Material.LIGHT_GRAY;
@@ -52,7 +50,6 @@ public abstract class AbstractShape extends WWObjectImpl
     /** The default geometry regeneration interval. */
     protected static final int DEFAULT_GEOMETRY_GENERATION_INTERVAL = 3000;
     /** Indicates the number of vertices that must be present in order for VBOs to be used to render this shape. */
-    protected static final int VBO_THRESHOLD = Configuration.getIntegerValue(AVKey.VBO_THRESHOLD, 30);
 
     /** The attributes used if attributes are not specified. */
     protected static ShapeAttributes defaultAttributes;
@@ -127,36 +124,9 @@ public abstract class AbstractShape extends WWObjectImpl
      */
     abstract protected boolean isOrderedRenderableValid(DrawContext dc);
 
-    /**
-     * Draws this shape's outline. Called immediately after calling {@link #prepareToDrawOutline(DrawContext,
-     * ShapeAttributes, ShapeAttributes)}, which establishes OpenGL state for lighting, blending, pick color and line
-     * attributes. Subclasses should execute the drawing commands specific to the type of shape.
-     * <p/>
-     * A {@link gov.nasa.worldwind.render.AbstractShape.AbstractShapeData} must be current when this method is called.
-     *
-     * @param dc the current draw context.
-     */
     abstract protected void doDrawOutline(DrawContext dc);
 
-    /**
-     * Draws this shape's interior. Called immediately after calling {@link #prepareToDrawInterior(DrawContext,
-     * ShapeAttributes, ShapeAttributes)}, which establishes OpenGL state for lighting, blending, pick color and
-     * interior attributes. Subclasses should execute the drawing commands specific to the type of shape.
-     * <p/>
-     * A {@link gov.nasa.worldwind.render.AbstractShape.AbstractShapeData} must be current when this method is called.
-     *
-     * @param dc the current draw context.
-     */
     abstract protected void doDrawInterior(DrawContext dc);
-
-    /**
-     * Fill this shape's vertex buffer objects. If the vertex buffer object resource IDs don't yet exist, create them.
-     * <p/>
-     * A {@link gov.nasa.worldwind.render.AbstractShape.AbstractShapeData} must be current when this method is called.
-     *
-     * @param dc the current draw context.
-     */
-    abstract protected void fillVBO(DrawContext dc);
 
     /**
      * Exports shape-specific fields.
@@ -175,7 +145,6 @@ public abstract class AbstractShape extends WWObjectImpl
      *
      * @return a data cache entry for the state in the specified draw context.
      */
-    protected abstract AbstractShapeData createCacheEntry(DrawContext dc);
 
     /** This shape's normal, non-highlighted attributes. */
     protected ShapeAttributes normalAttrs;
@@ -209,93 +178,20 @@ public abstract class AbstractShape extends WWObjectImpl
     protected PickSupport pickSupport = new PickSupport();
 
     /** Holds globe-dependent computed data. One entry per globe encountered during {@link #render(DrawContext)}. */
-    protected ShapeDataCache shapeDataCache = new ShapeDataCache(60000);
 
     // Additional drag context
-    protected DraggableSupport draggableSupport = null;
 
     /**
      * Identifies the active globe-dependent data for the current invocation of {@link #render(DrawContext)}. The active
      * data is drawn from this shape's data cache at the beginning of the <code>render</code> method.
      */
-    protected AbstractShapeData currentData;
 
     /**
      * Returns the data cache entry for the current rendering.
      *
      * @return the data cache entry for the current rendering.
      */
-    protected AbstractShapeData getCurrentData()
-    {
-        return this.currentData;
-    }
 
-    /** Holds the globe-dependent data captured in this shape's data cache. */
-    protected static class AbstractShapeData extends ShapeDataCache.ShapeDataCacheEntry
-    {
-        /** Identifies the frame used to calculate this entry's values. */
-        protected long frameNumber = -1;
-        /** This entry's reference point. */
-        protected Vec4 referencePoint;
-        /** A quick-to-compute metric to determine eye distance changes that invalidate this entry's geometry. */
-        protected Double referenceDistance;
-        /** The GPU-resource cache key to use for this entry's VBOs, if VBOs are used. */
-        protected Object vboCacheKey = new Object();
-
-        /**
-         * Constructs a data cache entry and initializes its globe-dependent state key for the globe in the specified
-         * draw context and capture the current vertical exaggeration. The entry becomes invalid when these values
-         * change or when the entry's expiration timer expires.
-         *
-         * @param dc            the current draw context.
-         * @param minExpiryTime the minimum number of milliseconds to use this shape before regenerating its geometry.
-         * @param maxExpiryTime the maximum number of milliseconds to use this shape before regenerating its geometry.
-         */
-        protected AbstractShapeData(DrawContext dc, long minExpiryTime, long maxExpiryTime)
-        {
-            super(dc, minExpiryTime, maxExpiryTime);
-        }
-
-        public long getFrameNumber()
-        {
-            return frameNumber;
-        }
-
-        public void setFrameNumber(long frameNumber)
-        {
-            this.frameNumber = frameNumber;
-        }
-
-        public Vec4 getReferencePoint()
-        {
-            return referencePoint;
-        }
-
-        public void setReferencePoint(Vec4 referencePoint)
-        {
-            this.referencePoint = referencePoint;
-        }
-
-        public Object getVboCacheKey()
-        {
-            return vboCacheKey;
-        }
-
-        public void setVboCacheKey(Object vboCacheKey)
-        {
-            this.vboCacheKey = vboCacheKey;
-        }
-
-        public Double getReferenceDistance()
-        {
-            return referenceDistance;
-        }
-
-        public void setReferenceDistance(Double referenceDistance)
-        {
-            this.referenceDistance = referenceDistance;
-        }
-    }
 
     /** Outlined shapes are drawn as {@link gov.nasa.worldwind.render.OutlinedShape}s. */
     protected OutlinedShape outlineShapeRenderer = new OutlinedShape()
@@ -363,7 +259,6 @@ public abstract class AbstractShape extends WWObjectImpl
     /** Invalidates computed values. Called when this shape's contents or certain attributes change. */
     protected void reset()
     {
-        this.shapeDataCache.removeAllEntries();
         this.sector = null;
         this.surfaceShape = null;
     }
@@ -479,11 +374,6 @@ public abstract class AbstractShape extends WWObjectImpl
         this.reset();
     }
 
-    public double getDistanceFromEye()
-    {
-        return this.getCurrentData() != null ? this.getCurrentData().getEyeDistance() : 0;
-    }
-
     /**
      * Indicates whether batch rendering is enabled for the concrete shape type of this shape.
      *
@@ -580,54 +470,6 @@ public abstract class AbstractShape extends WWObjectImpl
     }
 
     /**
-     * Specifies whether the filled sides of this shape should be offset towards the viewer to help eliminate artifacts
-     * when two or more faces of this or other filled shapes are coincident. See {@link
-     * gov.nasa.worldwind.render.Offset}.
-     *
-     * @param enableDepthOffset true if depth offset is applied, otherwise false.
-     */
-    public void setEnableDepthOffset(boolean enableDepthOffset)
-    {
-        this.enableDepthOffset = enableDepthOffset;
-    }
-
-    /**
-     * Indicates the maximum length of time between geometry regenerations. See {@link
-     * #setGeometryRegenerationInterval(int)} for the regeneration-interval's description.
-     *
-     * @return the geometry regeneration interval, in milliseconds.
-     *
-     * @see #setGeometryRegenerationInterval(int)
-     */
-    public long getGeometryRegenerationInterval()
-    {
-        return this.maxExpiryTime;
-    }
-
-    /**
-     * Specifies the maximum length of time between geometry regenerations. The geometry is regenerated when this
-     * shape's altitude mode is {@link WorldWind#CLAMP_TO_GROUND} or {@link WorldWind#RELATIVE_TO_GROUND} in order to
-     * capture changes to the terrain. (The terrain changes when its resolution changes or when new elevation data is
-     * returned from a server.) Decreasing this value causes the geometry to more quickly track terrain changes but at
-     * the cost of performance. Increasing this value often does not have much effect because there are limiting factors
-     * other than geometry regeneration.
-     *
-     * @param geometryRegenerationInterval the geometry regeneration interval, in milliseconds. The default is two
-     *                                     seconds.
-     */
-    public void setGeometryRegenerationInterval(int geometryRegenerationInterval)
-    {
-        this.maxExpiryTime = Math.max(geometryRegenerationInterval, 0);
-        this.minExpiryTime = (long) (0.6 * (double) this.maxExpiryTime);
-
-        for (ShapeDataCache.ShapeDataCacheEntry shapeData : this.shapeDataCache)
-        {
-            if (shapeData != null)
-                shapeData.getTimer().setExpiryTime(this.minExpiryTime, this.maxExpiryTime);
-        }
-    }
-
-    /**
      * Specifies the position to use as a reference position for computed geometry. This value should typically left to
      * the default value of the first position in the polygon's outer boundary.
      *
@@ -643,43 +485,6 @@ public abstract class AbstractShape extends WWObjectImpl
     public Object getDelegateOwner()
     {
         return delegateOwner;
-    }
-
-    public void setDelegateOwner(Object delegateOwner)
-    {
-        this.delegateOwner = delegateOwner;
-    }
-
-    /**
-     * Returns this shape's extent in model coordinates.
-     *
-     * @return this shape's extent, or null if an extent has not been computed.
-     */
-    public Extent getExtent()
-    {
-        return this.getCurrentData().getExtent();
-    }
-
-    /**
-     * Returns the Cartesian coordinates of this shape's reference position as computed during the most recent
-     * rendering.
-     *
-     * @return the Cartesian coordinates corresponding to this shape's reference position, or null if the point has not
-     * been computed.
-     */
-    public Vec4 getReferencePoint()
-    {
-        return this.currentData.getReferencePoint();
-    }
-
-    public Extent getExtent(Globe globe, double verticalExaggeration)
-    {
-        if (globe == null)
-            return null;
-
-        ShapeDataCache.ShapeDataCacheEntry entry = this.shapeDataCache.getEntry(globe);
-
-        return (entry != null && !entry.isExpired(null) && entry.getExtent() != null) ? entry.getExtent() : null;
     }
 
     /**
@@ -730,32 +535,6 @@ public abstract class AbstractShape extends WWObjectImpl
         return this.activeAttributes;
     }
 
-    /**
-     * Indicates whether this shape's renderable geometry must be recomputed, either as a result of an attribute or
-     * property change or the expiration of the geometry regeneration interval.
-     * <p/>
-     * A {@link gov.nasa.worldwind.render.AbstractShape.AbstractShapeData} must be current when this method is called.
-     *
-     * @param dc the current draw context.
-     *
-     * @return true if this shape's geometry must be regenerated, otherwise false.
-     */
-    protected boolean mustRegenerateGeometry(DrawContext dc)
-    {
-        return this.getCurrentData().isExpired(dc) || !this.getCurrentData().isValid(dc);
-    }
-
-    /**
-     * Indicates whether this shape should use OpenGL vertex buffer objects.
-     *
-     * @param dc the current draw context.
-     *
-     * @return true if this shape should use vertex buffer objects, otherwise false.
-     */
-    protected boolean shouldUseVBOs(DrawContext dc)
-    {
-        return dc.getGLRuntimeCapabilities().isUseVertexBufferObject();
-    }
 
     /**
      * Indicates whether this shape's interior must be drawn.
@@ -832,20 +611,6 @@ public abstract class AbstractShape extends WWObjectImpl
     protected boolean mustCreateNormals(DrawContext dc, ShapeAttributes activeAttrs)
     {
         return this.mustApplyLighting(dc, activeAttrs);
-    }
-
-    /**
-     * Creates a {@link WWTexture} for a specified image source.
-     *
-     * @param imageSource the image source for which to create the texture.
-     *
-     * @return the new <code>WWTexture</code>.
-     *
-     * @throws IllegalArgumentException if the image source is null.
-     */
-    protected WWTexture makeTexture(Object imageSource)
-    {
-        return new LazilyLoadedTexture(imageSource, true);
     }
 
     @Override
@@ -936,28 +701,13 @@ public abstract class AbstractShape extends WWObjectImpl
             return;
         }
 
-        // Retrieve the cached data for the current globe. If it doesn't yet exist, create it. Most code subsequently
-        // executed depends on currentData being non-null.
-        this.currentData = (AbstractShapeData) this.shapeDataCache.getEntry(dc.getGlobe());
-        if (this.currentData == null)
-        {
-            this.currentData = this.createCacheEntry(dc);
-            this.shapeDataCache.addEntry(this.currentData);
-        }
 
-        if (dc.getSurfaceGeometry() == null)
-            return;
 
         if (!this.isVisible())
             return;
 
         if (this.isTerrainDependent())
             this.checkViewDistanceExpiration(dc);
-
-        // Invalidate the extent if the vertical exaggeration has changed.
-        if (this.currentData.getVerticalExaggeration() != dc.getVerticalExaggeration()) {
-            this.currentData.setExtent(null);
-        }
 
         if (this.getExtent() != null)
         {
@@ -975,37 +725,9 @@ public abstract class AbstractShape extends WWObjectImpl
             this.makeOrderedRenderable(dc);
     }
 
-    /**
-     * Determines whether to add this shape to the draw context's ordered renderable list. Creates this shapes
-     * renderable geometry.
-     * <p/>
-     * A {@link gov.nasa.worldwind.render.AbstractShape.AbstractShapeData} must be current when this method is called.
-     *
-     * @param dc the current draw context.
-     */
     protected void makeOrderedRenderable(DrawContext dc)
     {
         // Re-use values already calculated this frame.
-        if (dc.getFrameTimeStamp() != this.getCurrentData().getFrameNumber())
-        {
-            this.determineActiveAttributes();
-            if (this.getActiveAttributes() == null)
-                return;
-
-            // Regenerate the positions and shape at a specified frequency.
-            if (this.mustRegenerateGeometry(dc))
-            {
-                if (!this.doMakeOrderedRenderable(dc))
-                    return;
-
-                if (this.shouldUseVBOs(dc))
-                    this.fillVBO(dc);
-
-                this.getCurrentData().restartTimer(dc);
-            }
-
-            this.getCurrentData().setFrameNumber(dc.getFrameTimeStamp());
-        }
 
         if (!this.isOrderedRenderableValid(dc))
             return;
@@ -1074,30 +796,9 @@ public abstract class AbstractShape extends WWObjectImpl
 
         if (!this.isViewDistanceExpiration())
             return;
-
-        Vec4 refPt = this.currentData.getReferencePoint();
-        if (refPt == null)
-            return;
-
-        double newRefDistance = dc.getView().getEyePoint().distanceTo3(refPt);
-        Double oldRefDistance = this.currentData.getReferenceDistance();
-        if (oldRefDistance == null || Math.abs(newRefDistance - oldRefDistance) / oldRefDistance > 0.10)
-        {
-            this.currentData.setExpired(true);
-            this.currentData.setExtent(null);
-            this.currentData.setReferenceDistance(newRefDistance);
-        }
     }
 
-    /**
-     * Determines whether this shape intersects the view frustum.
-     * <p/>
-     * A {@link gov.nasa.worldwind.render.AbstractShape.AbstractShapeData} must be current when this method is called.
-     *
-     * @param dc the current draw context.
-     *
-     * @return true if this shape intersects the frustum, otherwise false.
-     */
+
     protected boolean intersectsFrustum(DrawContext dc)
     {
         if (this.getExtent() == null)
@@ -1109,13 +810,7 @@ public abstract class AbstractShape extends WWObjectImpl
         return dc.getView().getFrustumInModelCoordinates().intersects(this.getExtent());
     }
 
-    /**
-     * Draws this shape as an ordered renderable.
-     * <p/>
-     * A {@link gov.nasa.worldwind.render.AbstractShape.AbstractShapeData} must be current when this method is called.
-     *
-     * @param dc the current draw context.
-     */
+
     protected void drawOrderedRenderable(DrawContext dc)
     {
         this.beginDrawing(dc, 0);
@@ -1132,14 +827,6 @@ public abstract class AbstractShape extends WWObjectImpl
         }
     }
 
-    /**
-     * Draws this ordered renderable and all subsequent Path ordered renderables in the ordered renderable list. If the
-     * current pick mode is true, only shapes within the same layer are drawn as a batch.
-     * <p/>
-     * A {@link gov.nasa.worldwind.render.AbstractShape.AbstractShapeData} must be current when this method is called.
-     *
-     * @param dc the current draw context.
-     */
     protected void drawBatched(DrawContext dc)
     {
         // Draw as many as we can in a batch to save ogl state switching.
@@ -1178,24 +865,10 @@ public abstract class AbstractShape extends WWObjectImpl
         }
     }
 
-    /**
-     * Draw this shape as an ordered renderable. If in picking mode, add it to the picked object list of specified
-     * {@link PickSupport}. The <code>PickSupport</code> may not be the one associated with this instance. During batch
-     * picking the <code>PickSupport</code> of the instance initiating the batch picking is used so that all shapes
-     * rendered in batch are added to the same pick list.
-     * <p/>
-     * A {@link gov.nasa.worldwind.render.AbstractShape.AbstractShapeData} must be current when this method is called.
-     *
-     * @param dc             the current draw context.
-     * @param pickCandidates a pick support holding the picked object list to add this shape to.
-     */
     protected void doDrawOrderedRenderable(DrawContext dc, PickSupport pickCandidates)
     {
-        this.currentData = (AbstractShapeData) this.shapeDataCache.getEntry(dc.getGlobe());
-
         GL2 gl = dc.getGL().getGL2(); // GL initialization checks for GL2 compatibility.
 
-        dc.getView().setReferenceCenter(dc, this.getCurrentData().getReferencePoint());
 
         if (dc.isPickingMode())
         {
@@ -1237,19 +910,6 @@ public abstract class AbstractShape extends WWObjectImpl
         return new PickedObject(colorCode, this.getDelegateOwner() != null ? this.getDelegateOwner() : this);
     }
 
-    /**
-     * Establish the OpenGL state needed to draw this shape.
-     * <p/>
-     * A {@link gov.nasa.worldwind.render.AbstractShape.AbstractShapeData} must be current when this method is called.
-     *
-     * @param dc       the current draw context.
-     * @param attrMask an attribute mask indicating state the caller will set. This base class implementation sets
-     *                 <code>GL_CURRENT_BIT, GL_LINE_BIT, GL_HINT_BIT, GL_POLYGON_BIT, GL_COLOR_BUFFER_BIT, and
-     *                 GL_TRANSFORM_BIT</code>.
-     *
-     * @return the stack handler used to set the OpenGL state. Callers should use this to set additional state,
-     * especially state indicated in the attribute mask argument.
-     */
     protected OGLStackHandler beginDrawing(DrawContext dc, int attrMask)
     {
         GL2 gl = dc.getGL().getGL2(); // GL initialization checks for GL2 compatibility.
@@ -1285,18 +945,11 @@ public abstract class AbstractShape extends WWObjectImpl
         this.BEogsh.pushClientAttrib(gl, GL2.GL_CLIENT_VERTEX_ARRAY_BIT);
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY); // all drawing uses vertex arrays
 
-        dc.getView().pushReferenceCenter(dc, this.getCurrentData().getReferencePoint());
 
         return this.BEogsh;
     }
 
-    /**
-     * Pop the state set in {@link #beginDrawing(DrawContext, int)}.
-     * <p/>
-     * A {@link gov.nasa.worldwind.render.AbstractShape.AbstractShapeData} must be current when this method is called.
-     *
-     * @param dc the current draw context.
-     */
+
     protected void endDrawing(DrawContext dc)
     {
         GL2 gl = dc.getGL().getGL2(); // GL initialization checks for GL2 compatibility.
@@ -1315,13 +968,6 @@ public abstract class AbstractShape extends WWObjectImpl
         this.BEogsh.pop(gl);
     }
 
-    /**
-     * Draws this shape's outline.
-     * <p/>
-     * A {@link gov.nasa.worldwind.render.AbstractShape.AbstractShapeData} must be current when this method is called.
-     *
-     * @param dc the current draw context.
-     */
     protected void drawOutline(DrawContext dc)
     {
         ShapeAttributes activeAttrs = this.getActiveAttributes();
@@ -1391,13 +1037,6 @@ public abstract class AbstractShape extends WWObjectImpl
         gl.glDisable(GL.GL_TEXTURE_2D);
     }
 
-    /**
-     * Draws this shape's interior.
-     * <p/>
-     * A {@link gov.nasa.worldwind.render.AbstractShape.AbstractShapeData} must be current when this method is called.
-     *
-     * @param dc the current draw context.
-     */
     protected void drawInterior(DrawContext dc)
     {
         this.prepareToDrawInterior(dc, this.getActiveAttributes(), defaultAttributes);
@@ -1538,33 +1177,6 @@ public abstract class AbstractShape extends WWObjectImpl
         return Sector.computeBoundingBox(globe, verticalExaggeration, mySector, extremes[0], extremes[1]);
     }
 
-    /**
-     * Get or create OpenGL resource IDs for the current data cache entry.
-     * <p/>
-     * A {@link gov.nasa.worldwind.render.AbstractShape.AbstractShapeData} must be current when this method is called.
-     *
-     * @param dc the current draw context.
-     *
-     * @return an array containing the coordinate vertex buffer ID in the first position and the index vertex buffer ID
-     * in the second position.
-     */
-    protected int[] getVboIds(DrawContext dc)
-    {
-        return (int[]) dc.getGpuResourceCache().get(this.getCurrentData().getVboCacheKey());
-    }
-
-    /**
-     * Removes from the GPU resource cache the entry for the current data cache entry's VBOs.
-     * <p/>
-     * A {@link gov.nasa.worldwind.render.AbstractShape.AbstractShapeData} must be current when this method is called.
-     *
-     * @param dc the current draw context.
-     */
-    protected void clearCachedVbos(DrawContext dc)
-    {
-        dc.getGpuResourceCache().remove(this.getCurrentData().getVboCacheKey());
-    }
-
     protected int countTriangleVertices(java.util.List<java.util.List<Integer>> prims,
         java.util.List<Integer> primTypes)
     {
@@ -1615,35 +1227,6 @@ public abstract class AbstractShape extends WWObjectImpl
     public void moveTo(Globe globe, Position position)
     {
         this.moveTo(position); // TODO: Update all implementers of this method to use the Movable2 interface
-    }
-
-    @Override
-    public boolean isDragEnabled()
-    {
-        return this.dragEnabled;
-    }
-
-    @Override
-    public void setDragEnabled(boolean enabled)
-    {
-        this.dragEnabled = enabled;
-    }
-
-    @Override
-    public void drag(DragContext dragContext)
-    {
-        if (!this.dragEnabled)
-            return;
-
-        if (this.draggableSupport == null)
-            this.draggableSupport = new DraggableSupport(this, this.getAltitudeMode());
-
-        this.doDrag(dragContext);
-    }
-
-    protected void doDrag(DragContext dragContext)
-    {
-        this.draggableSupport.dragGlobeSizeConstant(dragContext);
     }
 
     public String isExportFormatSupported(String mimeType)

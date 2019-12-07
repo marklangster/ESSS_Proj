@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -8,7 +8,6 @@ package gov.nasa.worldwind.ogc.kml.impl;
 
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.ogc.kml.KMLAbstractFeature;
-import gov.nasa.worldwind.render.*;
 import gov.nasa.worldwind.util.Logging;
 
 /**

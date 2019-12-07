@@ -11,7 +11,6 @@ import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.awt.ViewInputHandler;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.globes.Globe;
-import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.*;
 
 import javax.media.opengl.GL2;

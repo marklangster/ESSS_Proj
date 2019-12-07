@@ -571,13 +571,9 @@ public class CappedCylinder extends AbstractAirspace
             slices, stacks, orientation, referenceCenter);
 
         Object cacheKey = new Geometry.CacheKey(this.getClass(), "Cylinder.Indices", slices, stacks, orientation);
-        Geometry indexGeom = (Geometry) this.getGeometryCache().getObject(cacheKey);
-        if (indexGeom == null)
-        {
-            indexGeom = new Geometry();
-            this.makeCylinderIndices(slices, stacks, orientation, indexGeom);
-            this.getGeometryCache().add(cacheKey, indexGeom);
-        }
+        Geometry indexGeom = new Geometry();
+
+        this.makeCylinderIndices(slices, stacks, orientation, indexGeom);
 
         this.drawGeometry(dc, indexGeom, vertexGeom);
     }
@@ -590,13 +586,9 @@ public class CappedCylinder extends AbstractAirspace
 
         Object cacheKey = new Geometry.CacheKey(this.getClass(), "Cylinder.OutlineIndices", slices, stacks,
             orientation);
-        Geometry outlineIndexGeom = (Geometry) this.getGeometryCache().getObject(cacheKey);
-        if (outlineIndexGeom == null)
-        {
-            outlineIndexGeom = new Geometry();
+
+            Geometry outlineIndexGeom = new Geometry();
             this.makeCylinderOutlineIndices(slices, stacks, orientation, outlineIndexGeom);
-            this.getGeometryCache().add(cacheKey, outlineIndexGeom);
-        }
 
         this.drawGeometry(dc, outlineIndexGeom, vertexGeom);
     }
@@ -607,16 +599,12 @@ public class CappedCylinder extends AbstractAirspace
         Object cacheKey = new Geometry.CacheKey(dc.getGlobe(), this.getClass(), "Cylinder.Vertices", center, radius,
             altitudes[0], altitudes[1], terrainConformant[0], terrainConformant[1], slices, stacks, orientation,
             referenceCenter);
-        Geometry vertexGeom = (Geometry) this.getGeometryCache().getObject(cacheKey);
-        if (vertexGeom == null || this.isExpired(dc, vertexGeom))
-        {
-            if (vertexGeom == null)
-                vertexGeom = new Geometry();
-            this.makeCylinder(dc, center, radius, altitudes, terrainConformant, slices, stacks, orientation,
+        Geometry vertexGeom = new Geometry();
+
+
+        this.makeCylinder(dc, center, radius, altitudes, terrainConformant, slices, stacks, orientation,
                 referenceCenter, vertexGeom);
-            this.updateExpiryCriteria(dc, vertexGeom);
-            this.getGeometryCache().add(cacheKey, vertexGeom);
-        }
+        this.updateExpiryCriteria(dc, vertexGeom);
 
         return vertexGeom;
     }
@@ -674,25 +662,17 @@ public class CappedCylinder extends AbstractAirspace
         Object cacheKey = new Geometry.CacheKey(dc.getGlobe(), this.getClass(), "Disk.Vertices",
             center, radii[0], radii[1], altitude, terrainConformant,
             slices, loops, orientation, referenceCenter);
-        Geometry vertexGeom = (Geometry) this.getGeometryCache().getObject(cacheKey);
-        if (vertexGeom == null || this.isExpired(dc, vertexGeom))
-        {
-            if (vertexGeom == null)
-                vertexGeom = new Geometry();
+        Geometry vertexGeom = vertexGeom = new Geometry();
+
             this.makeDisk(dc, center, radii, altitude, terrainConformant,
                 slices, loops, orientation, referenceCenter, vertexGeom);
             this.updateExpiryCriteria(dc, vertexGeom);
-            this.getGeometryCache().add(cacheKey, vertexGeom);
-        }
+
 
         cacheKey = new Geometry.CacheKey(this.getClass(), "Disk.Indices", slices, loops, orientation);
-        Geometry indexGeom = (Geometry) this.getGeometryCache().getObject(cacheKey);
-        if (indexGeom == null)
-        {
-            indexGeom = new Geometry();
-            this.makeDiskIndices(slices, loops, orientation, indexGeom);
-            this.getGeometryCache().add(cacheKey, indexGeom);
-        }
+        Geometry indexGeom = new Geometry();
+
+        this.makeDiskIndices(slices, loops, orientation, indexGeom);
 
         this.drawGeometry(dc, indexGeom, vertexGeom);
     }
@@ -764,5 +744,11 @@ public class CappedCylinder extends AbstractAirspace
             or = this.getRadii()[1];
 
         this.setRadii(ir, or);
+    }
+
+    @Override
+    public Extent getExtent()
+    {
+        return null;
     }
 }

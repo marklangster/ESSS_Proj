@@ -1,36 +1,51 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 
 package gov.nasa.worldwind.ogc.kml.impl;
 
-import gov.nasa.worldwind.avlist.*;
-import gov.nasa.worldwind.ogc.kml.*;
-import gov.nasa.worldwind.render.*;
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.avlist.AVKey;
+import gov.nasa.worldwind.avlist.AVList;
+import gov.nasa.worldwind.ogc.kml.KMLAbstractFeature;
+import gov.nasa.worldwind.ogc.kml.KMLBalloonStyle;
+import gov.nasa.worldwind.ogc.kml.KMLConstants;
+import gov.nasa.worldwind.ogc.kml.KMLData;
+import gov.nasa.worldwind.ogc.kml.KMLExtendedData;
+import gov.nasa.worldwind.ogc.kml.KMLSchema;
+import gov.nasa.worldwind.ogc.kml.KMLSchemaData;
+import gov.nasa.worldwind.ogc.kml.KMLSimpleData;
+import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.Material;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.TextDecoder;
+import gov.nasa.worldwind.util.WWUtil;
 import gov.nasa.worldwind.util.webview.WebResourceResolver;
 
-import java.awt.*;
-import java.beans.*;
-import java.io.*;
+import java.awt.Rectangle;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * An implementation of {@link Balloon} that applies a {@link KMLBalloonStyle} to the balloon. Rather than fully
  * implementing the Balloon interface, this class provides a thin wrapper around another Balloon implementation and adds
  * the logic for styling the Balloon according to the KML style. All Balloon methods on this class pass through to the
  * contained Balloon.
- * <p/>
+ * <p>
  * To use KML Balloon, first create a Balloon of the desired type, and then create the KML Balloon. For example:
- * <p/>
- * <code>
  * <pre>
+ * <code>
  *   KMLPlacemark myPlacemark = ...;
  *   Position placemarkPosition = ...;
  *
@@ -39,8 +54,8 @@ import java.util.regex.*;
  *
  *   // Create a KML Balloon to apply the placemark's KML BalloonStyle to the browser balloon.
  *   KMLGlobeBalloonImpl kmlBalloon = new KMLGlobeBalloonImpl(globeBalloon, myPlacemark);
- * </pre>
  * </code>
+ * </pre>
  *
  * @author pabercrombie
  * @version $Id: KMLAbstractBalloon.java 1555 2013-08-20 13:33:12Z pabercrombie $
@@ -339,7 +354,7 @@ public abstract class KMLAbstractBalloon implements Balloon, WebResourceResolver
     /**
      * Add hyperlink tags to URLs in the balloon text. The text may include some simple HTML markup. This method
      * attempts to identify URLs in the text while not altering URLs that are already linked.
-     * <p/>
+     * <p>
      * This method is conservative about what is identified as a URL, in order to avoid adding links to text that the
      * user did not intend to be linked. Only HTTP and HTTPS URLs are recognised, as well as text that begins with www.
      * (in which case a http:// prefix will be prepended). Some punctuation characters that are valid URL characters
@@ -486,12 +501,12 @@ public abstract class KMLAbstractBalloon implements Balloon, WebResourceResolver
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * This implementation resolves relative resource paths by calling <code>{@link
      * gov.nasa.worldwind.ogc.kml.io.KMLDoc#getSupportFilePath(String)}</code> on the parent
      * <code>KMLAbstractFeature's</code> <code>KMLDoc</code>. This is necessary to correctly resolve relative references
      * in a KMZ archive.
-     * <p/>
+     * <p>
      * This returns <code>null</code> if the specified <code>address</code> is <code>null</code>.
      */
     public URL resolve(String address)

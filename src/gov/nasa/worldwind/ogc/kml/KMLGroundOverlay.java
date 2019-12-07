@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -7,13 +7,21 @@
 package gov.nasa.worldwind.ogc.kml;
 
 import gov.nasa.worldwind.event.Message;
-import gov.nasa.worldwind.geom.*;
+import gov.nasa.worldwind.geom.LatLon;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.ogc.kml.gx.GXLatLongQuad;
-import gov.nasa.worldwind.ogc.kml.impl.*;
+import gov.nasa.worldwind.ogc.kml.impl.KMLGroundOverlayPolygonImpl;
+import gov.nasa.worldwind.ogc.kml.impl.KMLRenderable;
+import gov.nasa.worldwind.ogc.kml.impl.KMLSurfaceImageImpl;
+import gov.nasa.worldwind.ogc.kml.impl.KMLSurfacePolygonImpl;
+import gov.nasa.worldwind.ogc.kml.impl.KMLTraversalContext;
+import gov.nasa.worldwind.ogc.kml.impl.KMLUtil;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.Logging;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents the KML <i>GroundOverlay</i> element and provides access to its contents.

@@ -1,16 +1,22 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
 
 package gov.nasa.worldwind.ogc.kml.io;
 
-import gov.nasa.worldwind.util.*;
+import gov.nasa.worldwind.util.Logging;
+import gov.nasa.worldwind.util.WWIO;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Implements the {@link KMLDoc} interface for KMZ files read from a stream.
@@ -43,7 +49,7 @@ public class KMZInputStream implements KMLDoc
      * @param sourceStream the input stream to read from.
      *
      * @throws IllegalArgumentException if the specified stream is null.
-     * @throws java.io.IOException      if an error occurs while accessing the stream.
+     * @throws IOException      if an error occurs while accessing the stream.
      */
     public KMZInputStream(InputStream sourceStream) throws IOException
     {
@@ -76,7 +82,7 @@ public class KMZInputStream implements KMLDoc
     }
 
     /**
-     * Returns an {@link java.io.InputStream} to the first KML file within the stream.
+     * Returns an {@link InputStream} to the first KML file within the stream.
      *
      * @return an input stream positioned to the first KML file in the stream, or null if the stream does not contain a
      *         KML file.
@@ -110,7 +116,7 @@ public class KMZInputStream implements KMLDoc
     /**
      * Returns an {@link InputStream} to a specified file within the KMZ stream. The file's path is resolved relative to
      * the internal root of the KMZ file represented by the stream.
-     * <p/>
+     * <p>
      * Note: Since relative references to files outside the stream have no meaning, this class does not resolve relative
      * references to files in other KMZ archives. For example, it does not resolve references like this:
      * <i>../other.kmz/file.png</i>.
@@ -157,7 +163,7 @@ public class KMZInputStream implements KMLDoc
     /**
      * Returns an absolute path to a specified file within the KMZ stream. The file's path is resolved relative to the
      * internal root of the KMZ file represented by the stream.
-     * <p/>
+     * <p>
      * Note: Since relative references to files outside the stream have no meaning, this class does not resolve relative
      * references to files in other KMZ archives. For example, it does not resolve references like this:
      * <i>../other.kmz/file.png</i>.
@@ -205,7 +211,7 @@ public class KMZInputStream implements KMLDoc
     /**
      * Copies a file from the input stream to the temporary area created to represent the KMZ contents. If that area
      * does not yet exists, it is created.
-     * <p/>
+     * <p>
      * Note: This method should be called only by another synchronized method of this instance.
      *
      * @throws IOException if an error occurs during the copy.

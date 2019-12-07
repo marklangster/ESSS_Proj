@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 United States Government as represented by the Administrator of the
+ * Copyright (C) 2019 United States Government as represented by the Administrator of the
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
@@ -8,10 +8,14 @@ package gov.nasa.worldwind.render.airspaces;
 import com.jogamp.common.nio.Buffers;
 import gov.nasa.worldwind.avlist.AVListImpl;
 import gov.nasa.worldwind.cache.Cacheable;
-import gov.nasa.worldwind.globes.*;
+import gov.nasa.worldwind.globes.Globe;
+import gov.nasa.worldwind.globes.GlobeStateKey;
 
-import javax.media.opengl.*;
-import java.nio.*;
+import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
+import java.nio.Buffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.Arrays;
 
 /**
